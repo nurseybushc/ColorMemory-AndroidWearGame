@@ -7,7 +7,7 @@
     tools:deviceIds="wear_square">
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/gametitle"
         android:gravity="top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,4 +20,11 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:onClick="startGame"/>
+    <TextView
+        android:id="@+id/highscore"
+        android:gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/highscore" />
 </RelativeLayout>

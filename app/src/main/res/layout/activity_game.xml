@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:rectLayout="@layout/rect_activity_game"
-    app:roundLayout="@layout/round_activity_game">
-
-</LinearLayout>
+<android.support.wearable.view.WatchViewStub xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/watch_view_stub"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+app:rectLayout="@layout/rect_activity_game"
+app:roundLayout="@layout/round_activity_game"
+tools:context="com.unocode.colormemory.GameActivity"
+tools:deviceIds="wear"/>
