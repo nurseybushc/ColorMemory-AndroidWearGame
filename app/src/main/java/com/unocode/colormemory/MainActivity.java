@@ -1,8 +1,10 @@
 package com.unocode.colormemory;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -20,5 +22,11 @@ public class MainActivity extends Activity {
                 mTextView = (TextView) stub.findViewById(R.id.text);
             }
         });
+
+    }
+    public void startGame(View v)
+    {
+        Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+        startActivity(intent);
     }
 }
