@@ -8,13 +8,13 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:layout_weight="1">
-        <View
+        <Button
             android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/red"/>
-        <View android:layout_weight="1"
-            android:layout_width="0dp"
+        <Button android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/green"/>
     </LinearLayout>
@@ -22,11 +22,11 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="horizontal">
-        <View android:layout_width="0dp"
+        <Button android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:background="#ffff00"/>
-        <View android:layout_width="0dp"
+        <Button android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:background="@color/blue"/>
