@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.unocode.colormemory.MainActivity"
-    tools:deviceIds="wear_square">
+    tools:deviceIds="wear_square"
+    android:padding="15dp">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        app:layout_box="all"
+        >
 
-    <TextView
-        android:id="@+id/gametitle"
-        android:gravity="top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/app_name" />
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="@string/start"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:onClick="startGame"/>
-    <TextView
-        android:id="@+id/highscore"
-        android:gravity="bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/highscore" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/gametitle"
+            android:gravity="top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/app_name" />
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="@string/start"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:onClick="startGame"/>
+        <TextView
+            android:id="@+id/highscore"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/highscore" />
+    </RelativeLayout>
+</android.support.wearable.view.BoxInsetLayout>
