@@ -30,4 +30,10 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(getApplicationContext(), GameActivity.class);
         startActivity(intent);
     }
+
+    public void showSettings(View v)
+    {
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+    }
 }
