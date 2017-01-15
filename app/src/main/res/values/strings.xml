@@ -6,4 +6,7 @@
     <string name="highscore">Highscore</string>
     <string name="settings">Settings</string>
     <string name="score">Score</string>
+    <string name="setting1">Setting 1</string>
+    <string name="switchOn">Switch is in ON State</string>
+    <string name="switchOff">Switch is in OFF State</string>
 </resources>
