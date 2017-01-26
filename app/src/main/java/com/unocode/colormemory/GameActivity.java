@@ -6,24 +6,16 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.Task;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.RunnableFuture;
-
-import static java.lang.Thread.sleep;
+import java.util.Random;
 
 /**
  * Created by Chance on 1/7/2017.
@@ -33,14 +25,19 @@ public class GameActivity extends Activity {
 
     public TextView mTextView;
     private Integer currentScore;
+    private Integer playerIndex;
     public Button btnRed, btnYellow, btnBlue, btnGreen;
     public Activity context;
+    public ArrayList<Integer> sequence;
+    public final int START_GAME_COUNT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        currentScore = 0;
+        sequence = new ArrayList<>();
+        currentScore = 1;
+        playerIndex = 0;
         context = this;
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
@@ -54,21 +51,41 @@ public class GameActivity extends Activity {
                 btnBlue = (Button) stub.findViewById(R.id.btnBlue);
                 btnGreen = (Button) stub.findViewById(R.id.btnGreen);
 
-                GameLoop();
+                try
+                {
+                    Thread.sleep(1000);//sleep the thread before changing color
+                }
+                catch(Exception ex){
+
+                }
+
+                Log.d("Game Start", "Game Starting...");
+                GameLoop(START_GAME_COUNT);
             }
         });
     }
 
-    public void GameLoop() {
-        int[] gameArray = {1, 2, 3, 4};
-        callSequence(context, gameArray);
+    public void GameLoop(int gameCount) {
+        Log.d("gameloop", String.format(Locale.US, "Round: %d", gameCount));
+        mTextView.setText(String.format(Locale.US, "%d", gameCount));
+
+        Random rand = new Random();
+        int value = rand.nextInt(4) + 1;//rand between 1-4
+
+        sequence.add(value);
+
+        for(int i = 0; i < sequence.size(); ++i) {//print the whole sequence for this round
+            Log.d("gameloop", String.format(Locale.US, "%d", sequence.get(i)));
+        }
+
+        callSequence(context, sequence);
     }
 
-    public void callSequence(Activity act, int[] sequence) {
+    public void callSequence(Activity act, ArrayList sequence) {
         Handler handler = new Handler();
         ClickThread thread;
-        for (int i = 0; i < sequence.length; ++i) {
-            switch (sequence[i]) {
+        for (int i = 0; i < sequence.size(); ++i) {
+            switch ((int)sequence.get(i)) {
                 case 1:
                     thread = new ClickThread(act, R.id.btnRed);
                     break;
@@ -102,12 +119,65 @@ public class GameActivity extends Activity {
         public void run() {
             Activity activity = mActivity.get();
             if (activity != null) {
-                increaseScore(btn);
+                changeBackgroundColor(btn);
             }
         }
     }
 
     public void increaseScore(View v) {
+
+        int selectedColor = 0;
+        switch (v.getId()) {
+            case (R.id.btnRed):
+                selectedColor = 1;
+                break;
+            case (R.id.btnGreen):
+                selectedColor = 2;
+                break;
+            case (R.id.btnBlue):
+                selectedColor = 3;
+                break;
+            case (R.id.btnYellow):
+                selectedColor = 4;
+                break;
+        }
+
+        Log.d("increaseScore", String.format(Locale.US, "Entered: %d", selectedColor));
+        Log.d("increaseScore", String.format(Locale.US, "Expected: %d", sequence.get(playerIndex)));
+
+        if(sequence.get(playerIndex) == selectedColor){
+            if(playerIndex + 1 >= sequence.size()){//to prevent index out of bounds
+                Log.d("increaseScore","Good job!");
+
+                currentScore++;//
+                playerIndex = 0;//reset player index
+
+                try{
+                    Thread.sleep(1000);//sleep the thread before changing color
+                }catch(Exception ex){
+
+                }
+                GameLoop(currentScore);
+            } else {
+                playerIndex++;
+            }
+
+        } else{
+            Log.d("increaseScore", "Failed");
+
+            sequence.clear();//clear the sequence arraylist
+            playerIndex = 0;//reset player index
+            currentScore = 1;//reset the currentScore
+            try{
+                Thread.sleep(2000);//sleep the thread before changing color
+            }catch(Exception ex){
+
+            }
+            GameLoop(START_GAME_COUNT);//start game over at 1
+        }
+    }
+
+    public void changeBackgroundColor(View v){
         //get the button
         final Button localButton = ((Button) v);
         //get background color of button
@@ -129,7 +199,5 @@ public class GameActivity extends Activity {
                 localButton.setBackgroundColor(oldColorId);
             }
         }.start();
-        currentScore += 1;
-        mTextView.setText(String.format(Locale.US, "%d", currentScore));
     }
 }
