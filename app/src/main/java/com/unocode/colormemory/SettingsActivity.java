@@ -30,7 +30,7 @@ public class SettingsActivity extends Activity {
         activity = this;
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        //sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         switchButton.setOnClickListener(new View.OnClickListener() {
 

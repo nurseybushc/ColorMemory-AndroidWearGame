@@ -1,6 +1,8 @@
 package com.unocode.colormemory;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -8,9 +10,11 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -30,6 +34,10 @@ public class GameActivity extends Activity {
     public Activity context;
     public ArrayList<Integer> sequence;
     public final int START_GAME_COUNT = 1;
+    SharedPreferences sharedpreferences;
+
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String highscore = "highscore";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,7 @@ public class GameActivity extends Activity {
         currentScore = 1;
         playerIndex = 0;
         context = this;
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -60,28 +69,50 @@ public class GameActivity extends Activity {
                 }
 
                 Log.d("Game Start", "Game Starting...");
+                //save highscore
+
+                Integer tempHighScore = sharedpreferences.getInt("highscore", 0);
+                Log.d("Game Start", "highscore is" + tempHighScore);
                 GameLoop(START_GAME_COUNT);
             }
         });
     }
 
-    public void GameLoop(int gameCount) {
+    public void toggleAllButtons(boolean enable){ //button class
+        if(enable) Log.d("gameloop", "enabling buttons");
+        else Log.d("gameloop", "disabling buttons");
+
+        btnRed.setEnabled(enable);
+        btnGreen.setEnabled(enable);
+        btnBlue.setEnabled(enable);
+        btnYellow.setEnabled(enable);
+
+        btnRed.setClickable(enable);
+        btnGreen.setClickable(enable);
+        btnBlue.setClickable(enable);
+        btnYellow.setClickable(enable);
+    }
+
+    public void GameLoop(int gameCount) {//game class
         Log.d("gameloop", String.format(Locale.US, "Round: %d", gameCount));
         mTextView.setText(String.format(Locale.US, "%d", gameCount));
 
+        toggleAllButtons(false);//disable buttons
         Random rand = new Random();
         int value = rand.nextInt(4) + 1;//rand between 1-4
 
         sequence.add(value);
 
+        String sequenceString = "Sequence: ";
         for(int i = 0; i < sequence.size(); ++i) {//print the whole sequence for this round
-            Log.d("gameloop", String.format(Locale.US, "%d", sequence.get(i)));
+            sequenceString = sequenceString + sequence.get(i) + ",";
         }
 
+        Log.d("gameloop", sequenceString);
         callSequence(context, sequence);
     }
 
-    public void callSequence(Activity act, ArrayList sequence) {
+    public void callSequence(Activity act, ArrayList sequence) {//game class
         Handler handler = new Handler();
         ClickThread thread;
         for (int i = 0; i < sequence.size(); ++i) {
@@ -103,6 +134,12 @@ public class GameActivity extends Activity {
             }
             handler.postDelayed(thread, 1000 * i);
         }
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toggleAllButtons(true);//enable buttons
+            }
+        }, 1000 * sequence.size());
     }
 
     //chance try 1/23
@@ -119,12 +156,18 @@ public class GameActivity extends Activity {
         public void run() {
             Activity activity = mActivity.get();
             if (activity != null) {
-                changeBackgroundColor(btn);
+                changeBackgroundColor(btn, false);
             }
         }
     }
 
     public void increaseScore(View v) {
+        if(!btnRed.isEnabled()) {
+            Log.d("increaseScore", "btn clicked while disabled. Exiting increaseScore()");
+            return;//if any button is disabled, end function
+        }
+
+        changeBackgroundColor(v, true);
 
         int selectedColor = 0;
         switch (v.getId()) {
@@ -149,6 +192,18 @@ public class GameActivity extends Activity {
             if(playerIndex + 1 >= sequence.size()){//to prevent index out of bounds
                 Log.d("increaseScore","Good job!");
 
+                //save highscore
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                if(sharedpreferences.getInt("highscore", 0) < currentScore){
+                    Log.d("increaseScore", "new highscore is " + currentScore);
+                    editor.putInt(highscore, currentScore);
+                    editor.apply();
+                }
+
+                Toast toast = Toast.makeText(context, "Good Job", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
+                toast.show();
+
                 currentScore++;//
                 playerIndex = 0;//reset player index
 
@@ -165,6 +220,10 @@ public class GameActivity extends Activity {
         } else{
             Log.d("increaseScore", "Failed");
 
+            Toast toast = Toast.makeText(context, "Failed", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
+            toast.show();
+
             sequence.clear();//clear the sequence arraylist
             playerIndex = 0;//reset player index
             currentScore = 1;//reset the currentScore
@@ -177,7 +236,7 @@ public class GameActivity extends Activity {
         }
     }
 
-    public void changeBackgroundColor(View v){
+    public void changeBackgroundColor(View v, boolean isUserClick){//button class
         //get the button
         final Button localButton = ((Button) v);
         //get background color of button
@@ -187,7 +246,11 @@ public class GameActivity extends Activity {
 
         localButton.setBackgroundColor(Color.WHITE);
 
-        new CountDownTimer(200, 50) {//200ms
+        int countdownTimerNum;
+        if(isUserClick) countdownTimerNum = 50;
+        else countdownTimerNum = 200;
+
+        new CountDownTimer(countdownTimerNum, 50) {//200ms
             @Override
             public void onTick(long arg0) {
                 // TODO Auto-generated method stub
