@@ -24,5 +24,19 @@
         android:layout_marginTop="20dp"
         android:text="@string/setting1"
         />
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:spinnerMode="dropdown" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnResetHS"
+        android:layout_gravity="center"
+        android:onClick="ResetScore"
+        android:text="@string/resetHighscore"/>
 </LinearLayout>
     </android.support.wearable.view.BoxInsetLayout>

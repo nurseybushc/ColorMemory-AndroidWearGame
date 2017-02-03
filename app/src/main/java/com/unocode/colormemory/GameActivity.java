@@ -38,6 +38,9 @@ public class GameActivity extends Activity {
 
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String highscore = "highscore";
+    public static final String DifficultySetting = "difficulty";
+    public int difficultySetAt;
+    public int gameSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,22 @@ public class GameActivity extends Activity {
         playerIndex = 0;
         context = this;
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        difficultySetAt = sharedpreferences.getInt(DifficultySetting, 0);
+
+        switch(difficultySetAt){
+            case 0:
+                gameSpeed = 1000;
+                break;
+            case 1:
+                gameSpeed = 750;
+                break;
+            case 2:
+                gameSpeed = 250;
+                break;
+            default:
+                gameSpeed = 1000;
+                break;
+        }
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -62,7 +81,7 @@ public class GameActivity extends Activity {
 
                 try
                 {
-                    Thread.sleep(1000);//sleep the thread before changing color
+                    Thread.sleep(1000);
                 }
                 catch(Exception ex){
 
@@ -71,8 +90,9 @@ public class GameActivity extends Activity {
                 Log.d("Game Start", "Game Starting...");
                 //save highscore
 
-                Integer tempHighScore = sharedpreferences.getInt("highscore", 0);
-                Log.d("Game Start", "highscore is" + tempHighScore);
+                Integer tempHighScore = sharedpreferences.getInt("highscore", 1);
+                Log.d("Game Start", "Highscore is " + tempHighScore);
+                Log.d("Game Start", "Difficulty is " + difficultySetAt);
                 GameLoop(START_GAME_COUNT);
             }
         });
@@ -132,7 +152,7 @@ public class GameActivity extends Activity {
                 default:
                     thread = new ClickThread(act, R.id.btnRed);
             }
-            handler.postDelayed(thread, 1000 * i);
+            handler.postDelayed(thread, gameSpeed * i);
         }
         handler.postDelayed(new Runnable() {
             @Override
@@ -198,11 +218,16 @@ public class GameActivity extends Activity {
                     Log.d("increaseScore", "new highscore is " + currentScore);
                     editor.putInt(highscore, currentScore);
                     editor.apply();
-                }
 
-                Toast toast = Toast.makeText(context, "Good Job", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
-                toast.show();
+                    Toast toast = Toast.makeText(context, "New highscore!!!", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
+                    toast.show();
+                } else {
+
+                    Toast toast = Toast.makeText(context, "Good Job", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
 
                 currentScore++;//
                 playerIndex = 0;//reset player index

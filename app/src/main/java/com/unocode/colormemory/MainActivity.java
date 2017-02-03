@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,30 +13,36 @@ import java.util.Locale;
 
 public class MainActivity extends Activity {
 
-    private TextView tvGameTitle, tvHighScore;
+    private TextView tvHighScore;
 
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    public static final String highscore = "highscore";
+    public static final String highscoreSetting = "highscore";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("onCreate", "Main activity creating");
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.round_activity_main);
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            @Override
-            public void onLayoutInflated(WatchViewStub stub) {
-                tvGameTitle = (TextView) stub.findViewById(R.id.gametitle);
-                tvHighScore = (TextView) stub.findViewById(R.id.highscore);
-                tvHighScore.setText(String.format(Locale.US, "Highscore : %d", sharedpreferences.getInt(highscore, 0)));
-            }
-        });
+        tvHighScore = (TextView) findViewById(R.id.highscore);
+        tvHighScore.setText(String.format(Locale.US, "Highscore : %d", sharedpreferences.getInt(highscoreSetting, 1)));
 
     }
+
+    @Override
+    public void onResume(){
+        Log.d("onResume", "Main activity resuming");
+        Log.d("Saved Highscore", "" + sharedpreferences.getInt(highscoreSetting, 1));
+
+        tvHighScore.setText(String.format(Locale.US, "Highscore : %d", sharedpreferences.getInt(highscoreSetting, 1)));
+
+        super.onResume();
+    }
+
     public void startGame(View v)
     {
         Intent intent = new Intent(getApplicationContext(), GameActivity.class);
