@@ -15,23 +15,49 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 import android.support.annotation.NonNull;
+import android.widget.ImageView;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
 
-    public static final String START_ACTIVITY_PATH = "/start/MainActivity";
+    public static final String START_ACTIVITY_PATH = "/colormemory/wear";
+    ImageView mBtnOnWearable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mBtnOnWearable = (ImageView) findViewById(R.id.startWearable);
+        mBtnOnWearable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("button onClick", "enter");
+                getNodes(new OnGotNodesListener() {
+                    @Override
+                    public void onGotNodes(ArrayList<String> nodes) {
+                        if(nodes.size() > 0) {
+                            Wearable.MessageApi.sendMessage(
+                                    getGoogleApiClient(), nodes.get(0), START_ACTIVITY_PATH, null).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+                                @Override
+                                public void onResult(MessageApi.SendMessageResult result) {
+                                    if (!result.getStatus().isSuccess()) {
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
+                .addApi(Wearable.API)
                 .build();
-        mGoogleApiClient.connect();
     }
 
     @Override
@@ -69,7 +95,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    public void startWear(View v) {
+    /*public void startWear(View v) {
         getNodes(new OnGotNodesListener() {
             @Override
             public void onGotNodes(ArrayList<String> nodes) {
@@ -78,7 +104,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 }
             }
         });
-    }
+    }*/
 
     private void getNodes(final OnGotNodesListener cb) {
         Wearable.NodeApi.getConnectedNodes(getGoogleApiClient()).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
@@ -100,7 +126,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
 
-    private void sendMessage(String node) {
+    /*private void sendMessage(String node) {
         Wearable.MessageApi.sendMessage(mGoogleApiClient, node, START_ACTIVITY_PATH, new byte[0]).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
             @Override
             public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
@@ -110,5 +136,5 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 }
             }
         });
-    }
+    }*/
 }

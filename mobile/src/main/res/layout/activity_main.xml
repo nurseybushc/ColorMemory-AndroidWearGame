@@ -32,8 +32,7 @@
                         android:id="@+id/startWearable"
                         android:background="@drawable/wear_button_bg"
                         android:src="@drawable/ic_watch"
-                        android:padding="10dip"
-                        android:onClick="startWear"/>
+                        android:padding="10dip"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"

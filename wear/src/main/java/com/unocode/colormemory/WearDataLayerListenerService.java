@@ -5,7 +5,7 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
 public class WearDataLayerListenerService extends WearableListenerService {
-    public static final String START_ACTIVITY_PATH = "/start/MainActivity";
+    public static final String START_ACTIVITY_PATH = "/colormemory/wear";
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);

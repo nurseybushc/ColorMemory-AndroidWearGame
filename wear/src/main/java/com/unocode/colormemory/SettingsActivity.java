@@ -7,16 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 import android.content.Context;
 
-
-/**
- * Created by Chance on 1/9/2017.
- */
 
 public class SettingsActivity extends Activity {
     Switch switchAdaptiveDifficulty;

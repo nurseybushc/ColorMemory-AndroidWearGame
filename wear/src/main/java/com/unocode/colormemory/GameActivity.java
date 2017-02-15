@@ -3,20 +3,13 @@ package com.unocode.colormemory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +17,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
-
-/**
- * Created by Chance on 1/7/2017.
- */
 
 public class GameActivity extends Activity {
 
@@ -81,17 +70,18 @@ public class GameActivity extends Activity {
             }
         }
 
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            @Override
-            public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.tvCurrentScore);
+       // final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        //stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+            //@Override
+            //public void onLayoutInflated(WatchViewStub stub) {
+        setContentView(R.layout.activity_game);
+                mTextView = (TextView) findViewById(R.id.tvCurrentScore);
                 mTextView.setText(String.format(Locale.US, "%d", currentScore));
-                btnRed = (Button) stub.findViewById(R.id.btnRed);
-                btnYellow = (Button) stub.findViewById(R.id.btnYellow);
-                btnBlue = (Button) stub.findViewById(R.id.btnBlue);
-                btnGreen = (Button) stub.findViewById(R.id.btnGreen);
-                tvWhoseTurn = (TextView) stub.findViewById(R.id.tvWhoseTurn);
+                btnRed = (Button) findViewById(R.id.btnRed);
+                btnYellow = (Button) findViewById(R.id.btnYellow);
+                btnBlue = (Button) findViewById(R.id.btnBlue);
+                btnGreen = (Button) findViewById(R.id.btnGreen);
+                tvWhoseTurn = (TextView) findViewById(R.id.tvWhoseTurn);
 
                 Log.d("Game Start", "Game Starting...");
                 //save highscore
@@ -100,8 +90,8 @@ public class GameActivity extends Activity {
                 Log.d("Game Start", "Highscore is " + tempHighScore);
                 Log.d("Game Start", "Difficulty is " + difficultySetAt);
                 GameLoop(START_GAME_COUNT);
-            }
-        });
+            //}
+        //});
     }
 
     public void toggleAllButtons(boolean enable){ //button class
@@ -178,14 +168,15 @@ public class GameActivity extends Activity {
                 default:
                     thread = new ClickThread(act, R.id.btnRed);
             }
-            handler.postDelayed(thread, gameSpeed * (i+1));
+            if(i == 0) handler.postDelayed(thread, 1000 * (i+1)); //wait a bit longer on the first round
+            else handler.postDelayed(thread, gameSpeed * (i+1));
         }
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 toggleAllButtons(true);//enable buttons
             }
-        }, 1000 * sequence.size());
+        }, gameSpeed * sequence.size());
     }
 
     class ClickThread extends Thread {

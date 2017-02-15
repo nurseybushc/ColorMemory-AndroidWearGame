@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
         Log.d("onCreate", "Main activity creating");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.round_activity_main);
+        setContentView(R.layout.activity_main);
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
