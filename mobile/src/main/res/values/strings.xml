@@ -5,6 +5,5 @@
     <string name="action_settings">Settings</string>
     <string name="welcome">ColorMemory Wear</string>
     <string name="description">https://github.com/nurseymybush/ColorMemory-AndroidWearGame</string>
-    <string name="third">Click the button start on watch</string>
-
+    <string name="third">Click button above to start game on watch</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.unocode.colormemory;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,11 +18,12 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.ArrayList;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
-
+    public TextView tvAppVersion;
     public static final String START_ACTIVITY_PATH = "/colormemory/wear";
     ImageView mBtnOnWearable;
 
@@ -30,6 +33,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        tvAppVersion = (TextView) findViewById(R.id.app_version);
+        String version = "App Version: " + BuildConfig.VERSION_NAME;
+        tvAppVersion.setText(version);
         mBtnOnWearable = (ImageView) findViewById(R.id.startWearable);
         mBtnOnWearable.setOnClickListener(new View.OnClickListener() {
             @Override

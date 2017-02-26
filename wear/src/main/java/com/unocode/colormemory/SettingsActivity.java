@@ -14,35 +14,43 @@ import android.content.Context;
 
 
 public class SettingsActivity extends Activity {
-    Switch switchAdaptiveDifficulty;
+    Switch switchAdaptiveDifficulty, switchRandomize;
     private Activity activity;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String AdaptiveDifficulty = "adaptive_difficulty";
+    public static final String Randomize = "randomize_list";
     public static final String DifficultySetting = "difficulty";
     public static final String highscoreSetting = "highscore";
 
     Spinner dropdown;
     public int difficultySetAt;
     public boolean adaptiveDifficultySet;
+    public boolean randomizeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        switchAdaptiveDifficulty = (Switch) findViewById(R.id.switchButton);
+        switchAdaptiveDifficulty = (Switch) findViewById(R.id.switchAdaptive);
         dropdown = (Spinner)findViewById(R.id.spinner1);
+        switchRandomize = (Switch) findViewById(R.id.switchRandomize);
+
         activity = this;
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         difficultySetAt = sharedpreferences.getInt(DifficultySetting, 0);
         adaptiveDifficultySet = sharedpreferences.getBoolean(AdaptiveDifficulty, false);
+        randomizeList = sharedpreferences.getBoolean(Randomize, false);
 
         //disable difficulty spinner if adaptive set
-        if(adaptiveDifficultySet) dropdown.setEnabled(false);
+        if(adaptiveDifficultySet) {
+            dropdown.setEnabled(false);
+            switchRandomize.setEnabled(false);
+        }
 
         switchAdaptiveDifficulty.setChecked(adaptiveDifficultySet);
-
+        switchRandomize.setChecked(randomizeList);
 
         Resources res = getResources();
         dropdown.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, res.getStringArray(R.array.difficulty)));
@@ -57,8 +65,23 @@ public class SettingsActivity extends Activity {
                 editor.apply();
 
                 //disable difficulty spinner if adaptive set
-                if(switchAdaptiveDifficulty.isChecked()) dropdown.setEnabled(false);
-                else dropdown.setEnabled(true);
+                if(switchAdaptiveDifficulty.isChecked()){
+                    dropdown.setEnabled(false);
+                    switchRandomize.setEnabled(false);
+                }
+                else {
+                    dropdown.setEnabled(true);
+                    switchRandomize.setEnabled(true);
+                }
+            }
+        });
+
+        switchRandomize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean(Randomize, switchRandomize.isChecked());
+                editor.apply();
             }
         });
 
@@ -72,8 +95,6 @@ public class SettingsActivity extends Activity {
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putInt(DifficultySetting, pos);
                     editor.apply();
-
-                    Toast.makeText(activity, "Difficulty is now " + pos, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -88,7 +109,5 @@ public class SettingsActivity extends Activity {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putInt(highscoreSetting, 1);
         editor.apply();
-
-        Toast.makeText(activity, "Resetting Highscore", Toast.LENGTH_SHORT).show();
     }
 }

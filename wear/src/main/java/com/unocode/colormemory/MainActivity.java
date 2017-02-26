@@ -14,6 +14,7 @@ import java.util.Locale;
 public class MainActivity extends Activity {
 
     private TextView tvHighScore;
+    public TextView tvAppVersion;
 
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
@@ -52,6 +53,12 @@ public class MainActivity extends Activity {
     public void showSettings(View v)
     {
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void showAbout(View v)
+    {
+        Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
         startActivity(intent);
     }
 }
