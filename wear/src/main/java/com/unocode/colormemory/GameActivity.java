@@ -78,6 +78,14 @@ public class GameActivity extends Activity {
         setContentView(R.layout.activity_game);
         mTextView = (TextView) findViewById(R.id.tvCurrentScore);
         mTextView.setText(String.format(Locale.US, "%d", currentScore));
+
+        mTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GameLoop(START_GAME_COUNT);//start game over at 1
+            }
+        });
+
         btnRed = (Button) findViewById(R.id.btnRed);
         btnYellow = (Button) findViewById(R.id.btnYellow);
         btnBlue = (Button) findViewById(R.id.btnBlue);
@@ -135,7 +143,10 @@ public class GameActivity extends Activity {
         }
 
         Log.d("gameloop", String.format(Locale.US, "Round: %d", gameCount));
+
+        mTextView.setClickable(false);
         mTextView.setText(String.format(Locale.US, "%d", gameCount));
+
 
         toggleAllButtons(false);//disable buttons
         Random rand = new Random();
@@ -262,8 +273,15 @@ public class GameActivity extends Activity {
             playerIndex = 0;//reset player index
             currentScore = 1;//reset the currentScore
 
-            GameLoop(START_GAME_COUNT);//start game over at 1
+            showFailedMessage();
+            //GameLoop(START_GAME_COUNT);//start game over at 1
         }
+    }
+
+    public void showFailedMessage() {
+        mTextView.setText(getResources().getString(R.string.failedMessage));
+        mTextView.setClickable(true);
+
     }
 
     public void changeBackgroundColor(View v, boolean isUserClick) {//button class
