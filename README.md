@@ -18,3 +18,7 @@ Same as Simon game. Click the colors in the sequence they were shown.
 Highscore, Settings
 ### Mobile
 Launch wear app button
+
+
+## Trello Board
+https://trello.com/b/pTPGPP75/colormemory-wear
