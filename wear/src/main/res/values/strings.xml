@@ -7,11 +7,15 @@
     <string name="highscores">Highscores</string>
     <string name="resetHighscore">Reset Highscore</string>
     <string name="failedMessage">Failed</string>
+    <string name="continueGame">Continue</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="score">Score</string>
     <string name="adaptive">Adaptive</string>
+    <string name="time_limit">Time Limit</string>
+    <string name="lives">Lives</string>
     <string name="randomize">Randomize</string>
+    <string name="randomize_colors">Random Colors</string>
     <string name="switchOn">Switch is now ON</string>
     <string name="switchOff">Switch is now OFF</string>
     <string-array name="difficulty"><item>Easy</item><item>Medium</item><item>Hard</item></string-array>

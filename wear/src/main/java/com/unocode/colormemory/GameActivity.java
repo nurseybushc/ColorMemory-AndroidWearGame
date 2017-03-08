@@ -3,24 +3,25 @@ package com.unocode.colormemory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Random;
 
 public class GameActivity extends Activity {
 
     public TextView mTextView, tvWhoseTurn;
+    private Integer currentCount;
     private Integer currentScore;
     private Integer playerIndex;
     public Button btnRed, btnYellow, btnBlue, btnGreen;
@@ -33,26 +34,49 @@ public class GameActivity extends Activity {
     public static final String highscore = "highscore";
     public static final String DifficultySetting = "difficulty";
     public static final String AdaptiveDifficulty = "adaptive_difficulty";
+    public static final String TimeLimit = "time_limit";
+    public static final String Lives = "lives";
+    public static final String RandomColors = "random_colors";
     public static final String Randomize = "randomize_list";
 
     public int difficultySetAt;
     public boolean adaptiveDifficultySet;
+    public boolean timeLimitSet;
+    public boolean livesSet;
+    public boolean failed;
+    public boolean randomColors;
+
+
+    public int timeLimit;
+    public int livesCount, currentLives;
+    public CountDownTimer cdt;
     public boolean randomizeSet;
     public int gameSpeed;
+
+    //score related
+    public int scoreMultipler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         sequence = new ArrayList<>();
-        currentScore = 1;
+        currentCount = START_GAME_COUNT;
+        currentScore = currentCount;
         playerIndex = 0;
         context = this;
+
+        //default scoreMultipler = 1;
+        scoreMultipler = 10;
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         difficultySetAt = sharedpreferences.getInt(DifficultySetting, 0);
         adaptiveDifficultySet = sharedpreferences.getBoolean(AdaptiveDifficulty, false);
+        timeLimitSet = sharedpreferences.getBoolean(TimeLimit, false);
+        livesSet = sharedpreferences.getBoolean(Lives, false);
+        failed = false;
         randomizeSet = sharedpreferences.getBoolean(Randomize, false);
+        randomColors = sharedpreferences.getBoolean(RandomColors, false);
 
         //if adaptivedifficulty, start game at easy and dont randomize
         if (adaptiveDifficultySet) {
@@ -62,27 +86,40 @@ public class GameActivity extends Activity {
             switch (difficultySetAt) {
                 case 0:
                     gameSpeed = 1000;
+                    timeLimit = 4000;
+                    livesCount = 5;
                     break;
                 case 1:
                     gameSpeed = 750;
+                    timeLimit = 3000;
+                    scoreMultipler += 2;
+                    livesCount = 3;
                     break;
                 case 2:
                     gameSpeed = 350;
+                    timeLimit = 2000;
+                    scoreMultipler += 5;
+                    livesCount = 1;
                     break;
                 default:
                     gameSpeed = 1000;
+                    timeLimit = 4000;
+                    livesCount = 5;
                     break;
             }
         }
 
+        currentLives = livesCount;
+        if (randomizeSet) scoreMultipler += 3;
+
         setContentView(R.layout.activity_game);
         mTextView = (TextView) findViewById(R.id.tvCurrentScore);
-        mTextView.setText(String.format(Locale.US, "%d", currentScore));
+        mTextView.setText(String.format(Locale.US, "%d", currentCount));
 
         mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GameLoop(START_GAME_COUNT);//start game over at 1
+                GameLoop(currentCount);//start game over at 1
             }
         });
 
@@ -101,7 +138,7 @@ public class GameActivity extends Activity {
         Log.v("Game Start", "Adaptive Difficulty Set: " + adaptiveDifficultySet);
         Log.v("Game Start", "Randomize Lists Set: " + randomizeSet);
 
-        GameLoop(START_GAME_COUNT);
+        GameLoop(currentCount);
     }
 
     public void toggleAllButtons(boolean enable) { //button class
@@ -152,9 +189,14 @@ public class GameActivity extends Activity {
         Random rand = new Random();
         int value = rand.nextInt(4) + 1;//rand between 1-4
 
-        if (!randomizeSet) {
+        if (livesSet && failed) {
+            Log.d("gameloop", "else liveset is true and previously failed");
+            failed = false;
+        } else if (!randomizeSet) {
+            Log.d("gameloop", "if randomize and liveset are false");
             sequence.add(value);
         } else {
+            Log.d("gameloop", "else randomize is true and liveset is false");
             sequence.clear();//clear list
             for (int i = 0; i < gameCount; ++i) {
                 sequence.add(value);
@@ -167,11 +209,36 @@ public class GameActivity extends Activity {
             sequenceString = sequenceString + sequence.get(i) + ",";
         }
 
+        if (randomColors) randomizeButtonColors();
         Log.d("gameloop", sequenceString);
         callSequence(context, sequence);
     }
 
-    public void callSequence(Activity act, ArrayList sequence) {//game class
+    public void randomizeButtonColors() {
+        //1-red,2-green,3-blue,4-yellow
+
+        ArrayList<Integer> buttonIndexes = new ArrayList<>();
+        buttonIndexes.add(0);
+        buttonIndexes.add(1);
+        buttonIndexes.add(2);
+        buttonIndexes.add(3);
+
+        Collections.shuffle(buttonIndexes);
+        //maybe button array or something to hold the buttons
+        int firstButtonIndex = buttonIndexes.remove(0);
+        int secondButtonIndex = buttonIndexes.remove(0);
+        int thirdButtonIndex = buttonIndexes.remove(0);
+        int fourthButtonIndex = buttonIndexes.remove(0);
+
+        Drawable[] drawables = {btnRed.getBackground(), btnGreen.getBackground(), btnBlue.getBackground(), btnYellow.getBackground()};
+
+        btnRed.setBackground(drawables[firstButtonIndex]);
+        btnGreen.setBackground(drawables[secondButtonIndex]);
+        btnBlue.setBackground(drawables[thirdButtonIndex]);
+        btnYellow.setBackground(drawables[fourthButtonIndex]);
+    }
+
+    public void callSequence(Activity act, final ArrayList sequence) {//game class
         Handler handler = new Handler();
         ClickThread thread;
 
@@ -200,8 +267,19 @@ public class GameActivity extends Activity {
             @Override
             public void run() {
                 toggleAllButtons(true);//enable buttons
+                if (timeLimitSet) {
+                    cdt = new CountDownTimer(timeLimit * sequence.size(), 1000) {
+                        public void onTick(long millisUntilFinished) {
+                        }
+
+                        public void onFinish() {
+                            showFailedMessage();
+                        }
+                    }.start();
+                }
             }
         }, gameSpeed * sequence.size());
+
     }
 
     class ClickThread extends Thread {
@@ -221,6 +299,11 @@ public class GameActivity extends Activity {
             }
         }
     }
+
+    public int calculateScore() {
+        return currentCount * scoreMultipler;
+    }
+
 
     public void increaseScore(View v) {
 
@@ -244,45 +327,61 @@ public class GameActivity extends Activity {
 
         if (sequence.get(playerIndex) == selectedColor) {
             if (playerIndex + 1 >= sequence.size()) {//to prevent index out of bounds
+                if (cdt != null) cdt.cancel();
                 Log.d("increaseScore", "Good job!");
+
+                currentScore = calculateScore();
 
                 //save highscore
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 if (sharedpreferences.getInt("highscore", 0) < currentScore) {
                     Log.d("increaseScore", "new highscore is " + currentScore);
+
                     editor.putInt(highscore, currentScore);
                     editor.apply();
-
-                    Toast toast = Toast.makeText(context, "New highscore!!!", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-                    toast.show();
                 }
 
-                currentScore++;//
+                currentCount++;//
                 playerIndex = 0;//reset player index
 
-                GameLoop(currentScore);
+                GameLoop(currentCount);
             } else {
                 playerIndex++;
             }
 
+        } else if (livesSet && currentLives > 0) {//fail but with lives
+            Log.d("increaseScore", "Failed but with lives");
+            failed = true;
+            currentLives--;
+            if (cdt != null) cdt.cancel();
+            playerIndex = 0;//reset player index
+            showContinueMessage();
         } else {
             Log.d("increaseScore", "Failed");
-
-            sequence.clear();//clear the sequence arraylist
-            playerIndex = 0;//reset player index
-            currentScore = 1;//reset the currentScore
-
+            if (cdt != null) cdt.cancel();
             showFailedMessage();
-            //GameLoop(START_GAME_COUNT);//start game over at 1
         }
     }
 
     public void showFailedMessage() {
+        sequence.clear();//clear the sequence arraylist
+        playerIndex = 0;//reset player index
+        currentCount = 1;//reset the currentCount
+        currentScore = currentCount;
+        currentLives = livesCount;
+
+        toggleAllButtons(false);
         mTextView.setText(getResources().getString(R.string.failedMessage));
         mTextView.setClickable(true);
 
     }
+
+    public void showContinueMessage() {
+        toggleAllButtons(false);
+        mTextView.setText(getResources().getString(R.string.continueGame));
+        mTextView.setClickable(true);
+    }
+
 
     public void changeBackgroundColor(View v, boolean isUserClick) {//button class
         //get the button
