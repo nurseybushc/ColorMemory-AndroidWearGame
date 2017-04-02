@@ -20,7 +20,7 @@ import java.util.Random;
 
 public class GameActivity extends Activity {
 
-    public TextView mTextView, tvWhoseTurn, tvScore;
+    public TextView mTextView, tvWhoseTurn, tvScore, tvLives, tvTimeLimit;
     private Integer currentCount;
     private Integer currentScore;
     private Integer playerIndex;
@@ -111,15 +111,6 @@ public class GameActivity extends Activity {
         currentLives = livesCount;
         if (randomizeSet) scoreMultipler += 3;
 
-        //TODO display time limit
-        if(timeLimitSet) {
-            //display time left textview toward bottom
-        }
-        //TODO display lives set
-        if(livesSet){
-            //display lives in textview on bottom
-        }
-
         setContentView(R.layout.activity_game);
         mTextView = (TextView) findViewById(R.id.tvCurrentScore);
         mTextView.setText(String.format(Locale.US, "%d", currentCount));
@@ -130,6 +121,15 @@ public class GameActivity extends Activity {
                 GameLoop(currentCount);//start game over at 1
             }
         });
+
+        tvTimeLimit = (TextView) findViewById(R.id.tvTimeLimit);
+        if(timeLimitSet) {
+            //display time left textview toward bottom
+        }
+        tvLives = (TextView) findViewById(R.id.tvLives);
+        if(livesSet){
+            tvLives.setText(String.format(Locale.US, "%d", currentLives));
+        }
 
         tvScore = (TextView) findViewById(R.id.tvScore);
         tvScore.setText(String.format(Locale.US, "%d", currentScore));
@@ -366,6 +366,7 @@ public class GameActivity extends Activity {
             Log.d("increaseScore", "Failed but with lives");
             failed = true;
             currentLives--;
+            tvLives.setText(String.format(Locale.US, "%d", currentLives));
             if (cdt != null) cdt.cancel();
             playerIndex = 0;//reset player index
             showContinueMessage();
@@ -384,6 +385,7 @@ public class GameActivity extends Activity {
         currentLives = livesCount;
 
         tvScore.setText(String.format(Locale.US, "%d", currentScore));
+        tvLives.setText(String.format(Locale.US, "%d", currentLives));
 
         toggleAllButtons(false);
         mTextView.setText(getResources().getString(R.string.failedMessage));
