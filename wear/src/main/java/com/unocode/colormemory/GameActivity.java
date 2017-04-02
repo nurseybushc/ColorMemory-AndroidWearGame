@@ -20,7 +20,7 @@ import java.util.Random;
 
 public class GameActivity extends Activity {
 
-    public TextView mTextView, tvWhoseTurn;
+    public TextView mTextView, tvWhoseTurn, tvScore;
     private Integer currentCount;
     private Integer currentScore;
     private Integer playerIndex;
@@ -45,7 +45,6 @@ public class GameActivity extends Activity {
     public boolean livesSet;
     public boolean failed;
     public boolean randomColors;
-
 
     public int timeLimit;
     public int livesCount, currentLives;
@@ -112,6 +111,15 @@ public class GameActivity extends Activity {
         currentLives = livesCount;
         if (randomizeSet) scoreMultipler += 3;
 
+        //TODO display time limit
+        if(timeLimitSet) {
+            //display time left textview toward bottom
+        }
+        //TODO display lives set
+        if(livesSet){
+            //display lives in textview on bottom
+        }
+
         setContentView(R.layout.activity_game);
         mTextView = (TextView) findViewById(R.id.tvCurrentScore);
         mTextView.setText(String.format(Locale.US, "%d", currentCount));
@@ -122,6 +130,9 @@ public class GameActivity extends Activity {
                 GameLoop(currentCount);//start game over at 1
             }
         });
+
+        tvScore = (TextView) findViewById(R.id.tvScore);
+        tvScore.setText(String.format(Locale.US, "%d", currentScore));
 
         btnRed = (Button) findViewById(R.id.btnRed);
         btnYellow = (Button) findViewById(R.id.btnYellow);
@@ -270,6 +281,7 @@ public class GameActivity extends Activity {
                 if (timeLimitSet) {
                     cdt = new CountDownTimer(timeLimit * sequence.size(), 1000) {
                         public void onTick(long millisUntilFinished) {
+
                         }
 
                         public void onFinish() {
@@ -331,6 +343,7 @@ public class GameActivity extends Activity {
                 Log.d("increaseScore", "Good job!");
 
                 currentScore = calculateScore();
+                tvScore.setText(String.format(Locale.US, "%d", currentScore));
 
                 //save highscore
                 SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -369,6 +382,8 @@ public class GameActivity extends Activity {
         currentCount = 1;//reset the currentCount
         currentScore = currentCount;
         currentLives = livesCount;
+
+        tvScore.setText(String.format(Locale.US, "%d", currentScore));
 
         toggleAllButtons(false);
         mTextView.setText(getResources().getString(R.string.failedMessage));
