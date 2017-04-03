@@ -53,14 +53,16 @@
                 android:layout_height="wrap_content"
                 android:background="@mipmap/ic_settings_white_24dp"
                 android:contentDescription="@string/settings"
-                android:onClick="showSettings" />
+                android:onClick="showSettings"
+                android:layout_margin="10dp"/>
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@mipmap/ic_info_white_24dp"
                 android:contentDescription="@string/about"
-                android:onClick="showAbout" />
+                android:onClick="showAbout"
+                android:layout_margin="10dp"/>
         </LinearLayout>
 
     </RelativeLayout>

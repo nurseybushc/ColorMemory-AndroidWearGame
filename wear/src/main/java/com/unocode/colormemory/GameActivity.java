@@ -66,7 +66,6 @@ public class GameActivity extends Activity {
         playerIndex = 0;
         context = this;
 
-        //default scoreMultipler = 1;
         scoreMultipler = 10;
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
@@ -110,7 +109,8 @@ public class GameActivity extends Activity {
         }
 
         currentLives = livesCount;
-        if (randomizeSet) scoreMultipler += 3;
+        if(randomizeSet) scoreMultipler += 3;
+        if(randomColors) scoreMultipler += 5;
 
         setContentView(R.layout.activity_game);
         mTextView = (TextView) findViewById(R.id.tvCurrentScore);
@@ -126,9 +126,12 @@ public class GameActivity extends Activity {
         tvTimeLimit = (TextView) findViewById(R.id.tvTimeLimit);
         if(timeLimitSet) {
             //display time left textview toward bottom
+            scoreMultipler += 3;
         }
+
         tvLives = (TextView) findViewById(R.id.tvLives);
         if(livesSet){
+            scoreMultipler -= 3;//having lives makes game easier
             tvLives.setText(String.format(Locale.US, "%d", currentLives));
         }
 
@@ -149,6 +152,8 @@ public class GameActivity extends Activity {
         Log.d("Game Start", "Difficulty:" + difficultySetAt);
         Log.v("Game Start", "Adaptive Difficulty Set: " + adaptiveDifficultySet);
         Log.v("Game Start", "Randomize Lists Set: " + randomizeSet);
+        Log.v("Game Start", "Randomize Colors Set: " + randomColors);
+        Log.v("Game Start", "Randomize Lives Set: " + livesSet);
 
         GameLoop(currentCount);
     }
@@ -181,21 +186,29 @@ public class GameActivity extends Activity {
     }
 
     public void GameLoop(int gameCount) {//game class
+        //Adaptive Difficulty Stuff
         //increase gamespeed every 5 levels
         if (adaptiveDifficultySet && (gameCount % 5 == 0) && (gameSpeed > 350)) {
+            scoreMultipler += 5;
             gameSpeed -= 50;
             Log.d("gameloop", String.format(Locale.US, "Gamespeed %d", gameSpeed));
 
             //randomly randomize list
-            randomizeSet = new Random().nextBoolean();
+            if(!randomizeSet) randomizeSet = new Random().nextBoolean();
+            if(randomizeSet) scoreMultipler += 3;
+            if(!timeLimitSet) timeLimitSet = new Random().nextBoolean();
+            if(timeLimitSet) scoreMultipler += 3;
+            if(!randomColors) randomColors = new Random().nextBoolean();
+            if(randomColors) scoreMultipler += 5;
+
             Log.v("gameloop", "Randomize Lists: " + randomizeSet);
         }
+
 
         Log.d("gameloop", String.format(Locale.US, "Round: %d", gameCount));
 
         mTextView.setClickable(false);
         mTextView.setText(String.format(Locale.US, "%d", gameCount));
-
 
         toggleAllButtons(false);//disable buttons
         Random rand = new Random();
@@ -286,7 +299,18 @@ public class GameActivity extends Activity {
                         }
 
                         public void onFinish() {
-                            showFailedMessage();
+                            if(livesSet && currentLives > 0){
+                                Log.d("increaseScore", "Failed but with lives");
+                                failed = true;
+                                currentLives--;
+                                tvLives.setText(String.format(Locale.US, "%d", currentLives));
+                                playerIndex = 0;//reset player index
+                                showContinueMessage();
+                            }
+                            else {
+                                Log.d("onFinish", "failed");
+                                showFailedMessage();
+                            }
                         }
                     }.start();
                 }
@@ -386,7 +410,7 @@ public class GameActivity extends Activity {
         currentLives = livesCount;
 
         tvScore.setText(String.format(Locale.US, "%d", currentScore));
-        tvLives.setText(String.format(Locale.US, "%d", currentLives));
+        if(livesSet) tvLives.setText(String.format(Locale.US, "%d", currentLives));
 
         toggleAllButtons(false);
         mTextView.setText(getResources().getString(R.string.failedMessage));

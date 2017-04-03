@@ -62,6 +62,7 @@ public class SettingsActivity extends Activity {
             dropdown.setEnabled(false);
             switchRandomize.setEnabled(false);
             switchTimeLimit.setEnabled(false);
+            switchRandomColors.setEnabled(false);
         }
 
         switchAdaptiveDifficulty.setChecked(adaptiveDifficultySet);
@@ -87,11 +88,13 @@ public class SettingsActivity extends Activity {
                     dropdown.setEnabled(false);
                     switchRandomize.setEnabled(false);
                     switchTimeLimit.setEnabled(false);
+                    switchRandomColors.setEnabled(false);
                 }
                 else {
                     dropdown.setEnabled(true);
                     switchRandomize.setEnabled(true);
                     switchTimeLimit.setEnabled(true);
+                    switchRandomColors.setEnabled(true);
                 }
             }
         });
