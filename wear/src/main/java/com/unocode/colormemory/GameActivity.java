@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends Activity {
 
@@ -279,9 +280,9 @@ public class GameActivity extends Activity {
             public void run() {
                 toggleAllButtons(true);//enable buttons
                 if (timeLimitSet) {
-                    cdt = new CountDownTimer(timeLimit * sequence.size(), 1000) {
+                    cdt = new CountDownTimer(timeLimit * sequence.size(), 1) {
                         public void onTick(long millisUntilFinished) {
-
+                            tvTimeLimit.setText(String.format(Locale.US,"%d.%d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),millisUntilFinished));
                         }
 
                         public void onFinish() {
