@@ -288,34 +288,67 @@ public class GameActivity extends Activity {
                 handler.postDelayed(thread, 1000 * (i + 1)); //wait a bit longer on the first round
             else handler.postDelayed(thread, gameSpeed * (i + 1));
         }
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                toggleAllButtons(true);//enable buttons
-                if (timeLimitSet) {
-                    cdt = new CountDownTimer(timeLimit * sequence.size(), 1) {
-                        public void onTick(long millisUntilFinished) {
-                            tvTimeLimit.setText(String.format(Locale.US,"%d.%d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),millisUntilFinished));
-                        }
+        if (sequence.size() == 1){//to fix issue with timer starting too soon on hard
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    toggleAllButtons(true);//enable buttons
+                    if (timeLimitSet) {
+                        cdt = new CountDownTimer(timeLimit * sequence.size(), 1) {
+                            public void onTick(long millisUntilFinished) {
+                                tvTimeLimit.setText(String.format(Locale.US,"%d.%d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),millisUntilFinished));
+                            }
 
-                        public void onFinish() {
-                            if(livesSet && currentLives > 0){
-                                Log.d("increaseScore", "Failed but with lives");
-                                failed = true;
-                                currentLives--;
-                                tvLives.setText(String.format(Locale.US, "%d", currentLives));
-                                playerIndex = 0;//reset player index
-                                showContinueMessage();
+                            public void onFinish() {
+                                if(livesSet && currentLives > 0){
+                                    Log.d("increaseScore", "Failed but with lives");
+                                    failed = true;
+                                    currentLives--;
+                                    tvLives.setText(String.format(Locale.US, "%d", currentLives));
+                                    playerIndex = 0;//reset player index
+                                    showContinueMessage();
+                                }
+                                else {
+                                    Log.d("onFinish", "failed");
+                                    showFailedMessage();
+                                }
                             }
-                            else {
-                                Log.d("onFinish", "failed");
-                                showFailedMessage();
-                            }
-                        }
-                    }.start();
+                        }.start();
+                    }
                 }
-            }
-        }, gameSpeed * sequence.size());
+            }, 1000 * sequence.size());
+        }
+        else {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    toggleAllButtons(true);//enable buttons
+                    if (timeLimitSet) {
+                        cdt = new CountDownTimer(timeLimit * sequence.size(), 1) {
+                            public void onTick(long millisUntilFinished) {
+                                tvTimeLimit.setText(String.format(Locale.US,"%d.%d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),millisUntilFinished));
+                            }
+
+                            public void onFinish() {
+                                if(livesSet && currentLives > 0){
+                                    Log.d("increaseScore", "Failed but with lives");
+                                    failed = true;
+                                    currentLives--;
+                                    tvLives.setText(String.format(Locale.US, "%d", currentLives));
+                                    playerIndex = 0;//reset player index
+                                    showContinueMessage();
+                                }
+                                else {
+                                    Log.d("onFinish", "failed");
+                                    showFailedMessage();
+                                }
+                            }
+                        }.start();
+                    }
+                }
+            }, gameSpeed * sequence.size());
+        }
+
 
     }
 
@@ -403,6 +436,12 @@ public class GameActivity extends Activity {
     }
 
     public void showFailedMessage() {
+        if(adaptiveDifficultySet){//reset these values
+            randomColors = false;
+            randomizeSet = false;
+            timeLimitSet = false;
+        }
+
         sequence.clear();//clear the sequence arraylist
         playerIndex = 0;//reset player index
         currentCount = 1;//reset the currentCount

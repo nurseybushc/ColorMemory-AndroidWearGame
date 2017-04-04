@@ -63,6 +63,19 @@ public class SettingsActivity extends Activity {
             switchRandomize.setEnabled(false);
             switchTimeLimit.setEnabled(false);
             switchRandomColors.setEnabled(false);
+
+            //make sure all are toggled to false
+            switchRandomize.setChecked(false);
+            switchTimeLimit.setChecked(false);
+            switchRandomColors.setChecked(false);
+
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(Randomize, false);
+            editor.putBoolean(TimeLimit, false);
+            editor.putBoolean(RandomColors, false);
+
+
+            editor.apply();
         }
 
         switchAdaptiveDifficulty.setChecked(adaptiveDifficultySet);
@@ -89,6 +102,11 @@ public class SettingsActivity extends Activity {
                     switchRandomize.setEnabled(false);
                     switchTimeLimit.setEnabled(false);
                     switchRandomColors.setEnabled(false);
+
+                    //make sure all are toggled to false
+                    switchRandomize.setChecked(false);
+                    switchTimeLimit.setChecked(false);
+                    switchRandomColors.setChecked(false);
                 }
                 else {
                     dropdown.setEnabled(true);
