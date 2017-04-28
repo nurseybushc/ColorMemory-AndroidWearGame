@@ -83,6 +83,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="16sp"/>
+
     <TextView
         android:id="@+id/tvCurrentScore"
         android:layout_width="wrap_content"
@@ -97,5 +98,22 @@
         android:shadowDx="1.5"
         android:shadowDy="1.5"
         android:shadowRadius="2"/>
-
+    <TextView
+        android:id="@+id/tvInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/tvCurrentScore"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/tvReverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tvCurrentScore"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
 </RelativeLayout>

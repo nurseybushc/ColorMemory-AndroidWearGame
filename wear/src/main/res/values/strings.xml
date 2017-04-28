@@ -15,11 +15,14 @@
     <string name="time_limit">Time Limit</string>
     <string name="lives">Lives</string>
     <string name="randomize">Randomize</string>
+    <string name="reverse">Reverse</string>
+    <string name="inverse">Inverse</string>
+    <string name="double_speed">Double Speed</string>
     <string name="randomize_colors">Random Colors</string>
     <string name="switchOn">Switch is now ON</string>
     <string name="switchOff">Switch is now OFF</string>
     <string-array name="difficulty"><item>Easy</item><item>Medium</item><item>Hard</item></string-array>
     <string name="cpu_turn">CPU</string>
     <string name="player_turn">PLAYER</string>
-
+    <string name="build_date">Change Date: 4/28/17</string>
 </resources>

@@ -25,12 +25,12 @@
                 android:text="@string/settings" />
 
             <Switch
-                android:id="@+id/switchAdaptive"
+                android:id="@+id/switchLives"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:text="@string/adaptive" />
+                android:text="@string/lives" />
 
             <Switch
                 android:id="@+id/switchRandomize"
@@ -48,13 +48,6 @@
                 android:layout_marginTop="20dp"
                 android:text="@string/time_limit" />
 
-            <Switch
-                android:id="@+id/switchLives"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:text="@string/lives" />
 
             <Switch
                 android:id="@+id/switchRandomColors"
@@ -63,6 +56,28 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:text="@string/randomize_colors" />
+            <Switch
+                android:id="@+id/switchReverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/reverse" />
+
+            <Switch
+                android:id="@+id/switchDoubleSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/double_speed" />
+            <Switch
+                android:id="@+id/switchInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/inverse" />
 
             <Spinner
                 android:id="@+id/spinner1"

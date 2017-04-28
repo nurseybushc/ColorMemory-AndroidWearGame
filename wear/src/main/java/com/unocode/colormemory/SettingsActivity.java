@@ -14,108 +14,71 @@ import android.content.Context;
 
 
 public class SettingsActivity extends Activity {
-    Switch switchAdaptiveDifficulty, switchRandomize, switchTimeLimit, switchLives, switchRandomColors;
+    Switch switchRandomize, switchTimeLimit, switchLives, switchRandomColors, switchReverse, switchDoubleSpeed, switchInverse;
     private Activity activity;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    public static final String AdaptiveDifficulty = "adaptive_difficulty";
     public static final String TimeLimit = "time_limit";
     public static final String Lives = "lives";
     public static final String RandomColors = "random_colors";
-
+    public static final String Reverse = "reverse";
+    public static final String DoubleSpeed = "double_speed";
+    public static final String Inverse = "inverse";
 
     public static final String Randomize = "randomize_list";
     public static final String DifficultySetting = "difficulty";
     public static final String highscoreSetting = "highscore";
 
+
     Spinner dropdown;
     public int difficultySetAt;
-    public boolean adaptiveDifficultySet;
     public boolean timeLimitSet;
+    public boolean reverseSet;
     public boolean livesSet;
     public boolean randomizeList;
     public boolean randomColors;
+    public boolean doubleSpeedSet;
+    public boolean inverseSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        switchAdaptiveDifficulty = (Switch) findViewById(R.id.switchAdaptive);
+
         dropdown = (Spinner)findViewById(R.id.spinner1);
         switchRandomize = (Switch) findViewById(R.id.switchRandomize);
         switchTimeLimit = (Switch) findViewById(R.id.switchTimeLimit);
         switchLives = (Switch) findViewById(R.id.switchLives);
+        switchReverse = (Switch) findViewById(R.id.switchReverse);
         switchRandomColors = (Switch)findViewById(R.id.switchRandomColors);
+        switchDoubleSpeed = (Switch) findViewById(R.id.switchDoubleSpeed);
+        switchInverse = (Switch) findViewById(R.id.switchInverse);
 
         activity = this;
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         difficultySetAt = sharedpreferences.getInt(DifficultySetting, 0);
-        adaptiveDifficultySet = sharedpreferences.getBoolean(AdaptiveDifficulty, false);
+        reverseSet = sharedpreferences.getBoolean(Reverse, false);
+        doubleSpeedSet = sharedpreferences.getBoolean(DoubleSpeed, false);
         timeLimitSet = sharedpreferences.getBoolean(TimeLimit, false);
         livesSet = sharedpreferences.getBoolean(Lives, false);
         randomizeList = sharedpreferences.getBoolean(Randomize, false);
         randomColors = sharedpreferences.getBoolean(RandomColors, false);
-
-        //disable difficulty spinner if adaptive set
-        if(adaptiveDifficultySet) {
-            dropdown.setEnabled(false);
-            switchRandomize.setEnabled(false);
-            switchTimeLimit.setEnabled(false);
-            switchRandomColors.setEnabled(false);
-
-            //make sure all are toggled to false
-            switchRandomize.setChecked(false);
-            switchTimeLimit.setChecked(false);
-            switchRandomColors.setChecked(false);
-
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putBoolean(Randomize, false);
-            editor.putBoolean(TimeLimit, false);
-            editor.putBoolean(RandomColors, false);
+        inverseSet = sharedpreferences.getBoolean(Inverse, false);
 
 
-            editor.apply();
-        }
-
-        switchAdaptiveDifficulty.setChecked(adaptiveDifficultySet);
         switchTimeLimit.setChecked(timeLimitSet);
+        switchReverse.setChecked(reverseSet);
         switchRandomize.setChecked(randomizeList);
         switchLives.setChecked(livesSet);
         switchRandomColors.setChecked(randomColors);
+        switchDoubleSpeed.setChecked(doubleSpeedSet);
+        switchInverse.setChecked(inverseSet);
 
         Resources res = getResources();
         dropdown.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, res.getStringArray(R.array.difficulty)));
 
         dropdown.setSelection(difficultySetAt);
-
-        switchAdaptiveDifficulty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(AdaptiveDifficulty, switchAdaptiveDifficulty.isChecked());
-                editor.apply();
-
-                //disable difficulty spinner if adaptive set
-                if(switchAdaptiveDifficulty.isChecked()){
-                    dropdown.setEnabled(false);
-                    switchRandomize.setEnabled(false);
-                    switchTimeLimit.setEnabled(false);
-                    switchRandomColors.setEnabled(false);
-
-                    //make sure all are toggled to false
-                    switchRandomize.setChecked(false);
-                    switchTimeLimit.setChecked(false);
-                    switchRandomColors.setChecked(false);
-                }
-                else {
-                    dropdown.setEnabled(true);
-                    switchRandomize.setEnabled(true);
-                    switchTimeLimit.setEnabled(true);
-                    switchRandomColors.setEnabled(true);
-                }
-            }
-        });
 
         switchRandomize.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +112,32 @@ public class SettingsActivity extends Activity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean(RandomColors, switchRandomColors.isChecked());
+                editor.apply();
+            }
+        });
+
+        switchReverse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean(Reverse, switchReverse.isChecked());
+                editor.apply();
+            }
+        });
+
+        switchDoubleSpeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean(DoubleSpeed, switchDoubleSpeed.isChecked());
+                editor.apply();
+            }
+        });
+        switchInverse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean(Inverse, switchInverse.isChecked());
                 editor.apply();
             }
         });

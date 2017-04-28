@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends Activity {
 
-    public TextView mTextView, tvWhoseTurn, tvScore, tvLives, tvTimeLimit;
+    public TextView mTextView, tvWhoseTurn, tvScore, tvLives, tvTimeLimit, tvReverse, tvInverse;
     private Integer currentCount;
     private Integer currentScore;
     private Integer playerIndex;
@@ -34,23 +34,28 @@ public class GameActivity extends Activity {
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String highscore = "highscore";
     public static final String DifficultySetting = "difficulty";
-    public static final String AdaptiveDifficulty = "adaptive_difficulty";
     public static final String TimeLimit = "time_limit";
     public static final String Lives = "lives";
     public static final String RandomColors = "random_colors";
     public static final String Randomize = "randomize_list";
+    public static final String Reverse = "reverse";
+    public static final String DoubleSpeed = "double_speed";
+    public static final String Inverse = "inverse";
+
 
     public int difficultySetAt;
-    public boolean adaptiveDifficultySet;
     public boolean timeLimitSet;
     public boolean livesSet;
     public boolean failed;
     public boolean randomColors;
+    public boolean reverseSet;
+    public boolean randomizeSet;
+    public boolean doubleSpeedSet;
+    public boolean inverseSet;
 
     public int timeLimit;
     public int livesCount, currentLives;
     public CountDownTimer cdt;
-    public boolean randomizeSet;
     public int gameSpeed;
 
     //score related
@@ -70,33 +75,30 @@ public class GameActivity extends Activity {
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         difficultySetAt = sharedpreferences.getInt(DifficultySetting, 0);
-        adaptiveDifficultySet = sharedpreferences.getBoolean(AdaptiveDifficulty, false);
         timeLimitSet = sharedpreferences.getBoolean(TimeLimit, false);
         livesSet = sharedpreferences.getBoolean(Lives, false);
         failed = false;
         randomizeSet = sharedpreferences.getBoolean(Randomize, false);
         randomColors = sharedpreferences.getBoolean(RandomColors, false);
+        reverseSet = sharedpreferences.getBoolean(Reverse, false);
+        doubleSpeedSet = sharedpreferences.getBoolean(DoubleSpeed, false);
+        inverseSet = sharedpreferences.getBoolean(Inverse, false);
 
-        //if adaptivedifficulty, start game at easy and dont randomize
-        if (adaptiveDifficultySet) {
-            gameSpeed = 1000;
-            randomizeSet = false;
-        } else {
             switch (difficultySetAt) {
                 case 0:
                     gameSpeed = 1000;
-                    timeLimit = 4000;
+                    timeLimit = 750;
                     livesCount = 5;
                     break;
                 case 1:
                     gameSpeed = 750;
-                    timeLimit = 3000;
+                    timeLimit = 500;
                     scoreMultipler += 2;
                     livesCount = 3;
                     break;
                 case 2:
                     gameSpeed = 350;
-                    timeLimit = 2000;
+                    timeLimit = 350;
                     scoreMultipler += 5;
                     livesCount = 1;
                     break;
@@ -106,11 +108,11 @@ public class GameActivity extends Activity {
                     livesCount = 5;
                     break;
             }
-        }
 
         currentLives = livesCount;
         if(randomizeSet) scoreMultipler += 3;
         if(randomColors) scoreMultipler += 5;
+        if(doubleSpeedSet) scoreMultipler += 5;
 
         setContentView(R.layout.activity_game);
         mTextView = (TextView) findViewById(R.id.tvCurrentScore);
@@ -132,7 +134,20 @@ public class GameActivity extends Activity {
         tvLives = (TextView) findViewById(R.id.tvLives);
         if(livesSet){
             scoreMultipler -= 3;//having lives makes game easier
-            tvLives.setText(String.format(Locale.US, "%d", currentLives));
+            String livesText = getResources().getString(R.string.lives) + ": " +  currentLives;
+            tvLives.setText(livesText);
+        }
+
+        tvReverse = (TextView) findViewById(R.id.tvReverse);
+        if(reverseSet){
+            scoreMultipler += 8;
+            tvReverse.setText(R.string.reverse);
+        }
+
+        tvInverse = (TextView) findViewById(R.id.tvInverse);
+        if(inverseSet){
+            scoreMultipler += 5;
+            tvInverse.setText(R.string.inverse);
         }
 
         tvScore = (TextView) findViewById(R.id.tvScore);
@@ -150,7 +165,6 @@ public class GameActivity extends Activity {
         Integer tempHighScore = sharedpreferences.getInt("highscore", 1);
         Log.d("Game Start", "Highscore:" + tempHighScore);
         Log.d("Game Start", "Difficulty:" + difficultySetAt);
-        Log.v("Game Start", "Adaptive Difficulty Set: " + adaptiveDifficultySet);
         Log.v("Game Start", "Randomize Lists Set: " + randomizeSet);
         Log.v("Game Start", "Randomize Colors Set: " + randomColors);
         Log.v("Game Start", "Randomize Lives Set: " + livesSet);
@@ -186,24 +200,6 @@ public class GameActivity extends Activity {
     }
 
     public void GameLoop(int gameCount) {//game class
-        //Adaptive Difficulty Stuff
-        //increase gamespeed every 5 levels
-        if (adaptiveDifficultySet && (gameCount % 5 == 0) && (gameSpeed > 350)) {
-            scoreMultipler += 5;
-            gameSpeed -= 50;
-            Log.d("gameloop", String.format(Locale.US, "Gamespeed %d", gameSpeed));
-
-            //randomly randomize list
-            if(!randomizeSet) randomizeSet = new Random().nextBoolean();
-            if(randomizeSet) scoreMultipler += 3;
-            if(!timeLimitSet) timeLimitSet = new Random().nextBoolean();
-            if(timeLimitSet) scoreMultipler += 3;
-            if(!randomColors) randomColors = new Random().nextBoolean();
-            if(randomColors) scoreMultipler += 5;
-
-            Log.v("gameloop", "Randomize Lists: " + randomizeSet);
-        }
-
 
         Log.d("gameloop", String.format(Locale.US, "Round: %d", gameCount));
 
@@ -220,6 +216,9 @@ public class GameActivity extends Activity {
         } else if (!randomizeSet) {
             Log.d("gameloop", "if randomize and liveset are false");
             sequence.add(value);
+            if(doubleSpeedSet && gameCount > 1){
+                sequence.add(value);
+            }
         } else {
             Log.d("gameloop", "else randomize is true and liveset is false");
             sequence.clear();//clear list
@@ -234,14 +233,19 @@ public class GameActivity extends Activity {
             sequenceString = sequenceString + sequence.get(i) + ",";
         }
 
-        if (randomColors) randomizeButtonColors();
         Log.d("gameloop", sequenceString);
-        callSequence(context, sequence);
+        //chance try 4-4-17 to run on ui thread
+        if (randomColors) {
+            randomizeButtonColors();
+            callSequence(context, sequence);
+        } else {
+            callSequence(context, sequence);
+        }
     }
 
     public void randomizeButtonColors() {
         //1-red,2-green,3-blue,4-yellow
-
+        Log.d("randomizeButtonColors", "start");
         ArrayList<Integer> buttonIndexes = new ArrayList<>();
         buttonIndexes.add(0);
         buttonIndexes.add(1);
@@ -264,6 +268,8 @@ public class GameActivity extends Activity {
     }
 
     public void callSequence(Activity act, final ArrayList sequence) {//game class
+        Log.d("callSequence", "start");
+
         Handler handler = new Handler();
         ClickThread thread;
 
@@ -288,15 +294,17 @@ public class GameActivity extends Activity {
                 handler.postDelayed(thread, 1000 * (i + 1)); //wait a bit longer on the first round
             else handler.postDelayed(thread, gameSpeed * (i + 1));
         }
+
         if (sequence.size() == 1){//to fix issue with timer starting too soon on hard
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     toggleAllButtons(true);//enable buttons
                     if (timeLimitSet) {
-                        cdt = new CountDownTimer(timeLimit * sequence.size(), 1) {
+                        cdt = new CountDownTimer(1000, 1) {
                             public void onTick(long millisUntilFinished) {
-                                tvTimeLimit.setText(String.format(Locale.US,"%d.%d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),millisUntilFinished));
+                                String timeLimitString = "Time: " + String.format(Locale.US,"%d.%d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),millisUntilFinished);
+                                tvTimeLimit.setText(timeLimitString);
                             }
 
                             public void onFinish() {
@@ -304,7 +312,8 @@ public class GameActivity extends Activity {
                                     Log.d("increaseScore", "Failed but with lives");
                                     failed = true;
                                     currentLives--;
-                                    tvLives.setText(String.format(Locale.US, "%d", currentLives));
+                                    String livesText = getResources().getString(R.string.lives) + ": " +  currentLives;
+                                    tvLives.setText(livesText);
                                     playerIndex = 0;//reset player index
                                     showContinueMessage();
                                 }
@@ -324,9 +333,10 @@ public class GameActivity extends Activity {
                 public void run() {
                     toggleAllButtons(true);//enable buttons
                     if (timeLimitSet) {
-                        cdt = new CountDownTimer(timeLimit * sequence.size(), 1) {
+                        cdt = new CountDownTimer(1000 + (timeLimit * sequence.size()), 1) {
                             public void onTick(long millisUntilFinished) {
-                                tvTimeLimit.setText(String.format(Locale.US,"%d.%d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),millisUntilFinished));
+                                String timeLimitString = "Time: " + String.format(Locale.US,"%d.%d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),millisUntilFinished);
+                                tvTimeLimit.setText(timeLimitString);
                             }
 
                             public void onFinish() {
@@ -334,7 +344,8 @@ public class GameActivity extends Activity {
                                     Log.d("increaseScore", "Failed but with lives");
                                     failed = true;
                                     currentLives--;
-                                    tvLives.setText(String.format(Locale.US, "%d", currentLives));
+                                    String livesText = getResources().getString(R.string.lives) + ": " +  currentLives;
+                                    tvLives.setText(livesText);
                                     playerIndex = 0;//reset player index
                                     showContinueMessage();
                                 }
@@ -355,17 +366,44 @@ public class GameActivity extends Activity {
     class ClickThread extends Thread {
         private WeakReference<Activity> mActivity;
         private Button btn;
+        private Button btn1, btn2, btn3;
+        private int[] otherBtnIds;
+        private int[] btnIds;
 
         ClickThread(Activity activity, int btnId) {
+            Log.d("ClickThread()", "start");
             mActivity = new WeakReference<>(activity);
-            btn = (Button) activity.findViewById(btnId);
+            btnIds = new int[] {R.id.btnRed, R.id.btnGreen, R.id.btnBlue, R.id.btnYellow};
+            otherBtnIds = new int[4];
+            if(!inverseSet){
+                btn = (Button) activity.findViewById(btnId);
+            } else {
+                int otherBtnIdCount = 0;
+                for(int i = 0; i < btnIds.length; ++i){
+
+                    if(btnId != btnIds[i]){
+                        otherBtnIds[otherBtnIdCount] = btnIds[i];
+                        otherBtnIdCount++;
+                    }
+                }
+                btn1 = (Button) activity.findViewById(otherBtnIds[0]);
+                btn2 = (Button) activity.findViewById(otherBtnIds[1]);
+                btn3 = (Button) activity.findViewById(otherBtnIds[2]);
+            }
         }
 
         @Override
         public void run() {
+            Log.d("ClickThread run()", "start");
             Activity activity = mActivity.get();
             if (activity != null) {
-                changeBackgroundColor(btn, false);
+                if(!inverseSet){
+                    changeBackgroundColor(btn, false);
+                } else {
+                    changeBackgroundColor(btn1, false);
+                    changeBackgroundColor(btn2, false);
+                    changeBackgroundColor(btn3, false);
+                }
             }
         }
     }
@@ -392,10 +430,15 @@ public class GameActivity extends Activity {
                 selectedColor = 4;
                 break;
         }
+        int expected;
 
-        Log.d("increaseScore", String.format(Locale.US, "Entered: %d. Expected: %d", selectedColor, sequence.get(playerIndex)));
-
-        if (sequence.get(playerIndex) == selectedColor) {
+        if(reverseSet){
+            expected =  sequence.get(sequence.size() - (playerIndex+1));
+        }else{
+            expected = sequence.get(playerIndex);
+        }
+        Log.d("increaseScore", String.format(Locale.US, "Entered: %d. Expected: %d", selectedColor, expected));
+        if (expected == selectedColor) {
             if (playerIndex + 1 >= sequence.size()) {//to prevent index out of bounds
                 if (cdt != null) cdt.cancel();
                 Log.d("increaseScore", "Good job!");
@@ -412,7 +455,13 @@ public class GameActivity extends Activity {
                     editor.apply();
                 }
 
-                currentCount++;//
+                if(doubleSpeedSet){
+                    currentCount += 2;//
+                } else{
+                    currentCount++;
+                }
+
+
                 playerIndex = 0;//reset player index
 
                 GameLoop(currentCount);
@@ -424,7 +473,8 @@ public class GameActivity extends Activity {
             Log.d("increaseScore", "Failed but with lives");
             failed = true;
             currentLives--;
-            tvLives.setText(String.format(Locale.US, "%d", currentLives));
+            String livesText = getResources().getString(R.string.lives) + ": " +  currentLives;
+            tvLives.setText(livesText);
             if (cdt != null) cdt.cancel();
             playerIndex = 0;//reset player index
             showContinueMessage();
@@ -436,11 +486,6 @@ public class GameActivity extends Activity {
     }
 
     public void showFailedMessage() {
-        if(adaptiveDifficultySet){//reset these values
-            randomColors = false;
-            randomizeSet = false;
-            timeLimitSet = false;
-        }
 
         sequence.clear();//clear the sequence arraylist
         playerIndex = 0;//reset player index
@@ -449,12 +494,12 @@ public class GameActivity extends Activity {
         currentLives = livesCount;
 
         tvScore.setText(String.format(Locale.US, "%d", currentScore));
-        if(livesSet) tvLives.setText(String.format(Locale.US, "%d", currentLives));
+        String livesText = getResources().getString(R.string.lives) + ": " +  currentLives;
+        if(livesSet) tvLives.setText(livesText);
 
         toggleAllButtons(false);
         mTextView.setText(getResources().getString(R.string.failedMessage));
         mTextView.setClickable(true);
-
     }
 
     public void showContinueMessage() {
@@ -465,14 +510,23 @@ public class GameActivity extends Activity {
 
 
     public void changeBackgroundColor(View v, boolean isUserClick) {//button class
+        Log.d("changeBackgroundColor", "start");
         //get the button
         final Button localButton = ((Button) v);
+
+        //get current color of button (for button color change setting)
+        final Drawable background = localButton.getBackground();
 
         localButton.setPressed(true);
 
         int countdownTimerNum;
-        if (isUserClick) countdownTimerNum = 50;
-        else countdownTimerNum = 200;
+        if (isUserClick) {
+            //Log.d("changeBackgroundColor", "isUserClick true");
+            countdownTimerNum = 50;
+        } else {
+            //Log.d("changeBackgroundColor", "isUserClick false");
+            countdownTimerNum = 200;
+        }
 
         new CountDownTimer(countdownTimerNum, countdownTimerNum) {//200ms
             @Override
@@ -484,6 +538,10 @@ public class GameActivity extends Activity {
             public void onFinish() {
                 //change color back to original color
                 localButton.setPressed(false);
+                if(randomColors) {
+                    Log.d("if(randomColors)", "setting background color to previous");
+                    localButton.setBackground(background);
+                }
             }
         }.start();
     }
