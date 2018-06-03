@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
     }
 
     public int GetMultiplier(){
-        int scoreMultiplier = 10;
+        int scoreMultiplier = 20;
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         difficultySetAt = sharedpreferences.getInt(DifficultySetting, 0);
         timeLimitSet = sharedpreferences.getBoolean(TimeLimit, false);
@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
         if(randomColors) scoreMultiplier += 5;
         if(doubleSpeedSet) scoreMultiplier += 5;
         if(timeLimitSet) scoreMultiplier += 3;
-        if(livesSet) scoreMultiplier -= 3;
+        if(livesSet) scoreMultiplier -= 5;
         if(reverseSet) scoreMultiplier += 8;
         if(inverseSet) scoreMultiplier += 5;
 

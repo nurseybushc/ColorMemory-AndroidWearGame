@@ -109,7 +109,7 @@ public class SettingsActivity extends Activity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 boolean switchLivesChecked = switchLives.isChecked();
-                String incDecMult = switchLivesChecked ? "-3" : "+3";
+                String incDecMult = switchLivesChecked ? "-5" : "+5";
                 Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
                 editor.putBoolean(Lives, switchLivesChecked);
                 editor.apply();

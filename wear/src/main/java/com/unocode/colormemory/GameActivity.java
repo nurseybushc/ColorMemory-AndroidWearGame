@@ -78,7 +78,7 @@ public class GameActivity extends Activity {
         playerIndex = 0;
         context = this;
 
-        scoreMultipler = 10;
+        scoreMultipler = 20;
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         difficultySetAt = sharedpreferences.getInt(DifficultySetting, 0);
@@ -140,7 +140,7 @@ public class GameActivity extends Activity {
 
         tvLives = (TextView) findViewById(R.id.tvLives);
         if(livesSet){
-            scoreMultipler -= 3;//having lives makes game easier
+            scoreMultipler -= 5;//having lives makes game easier
             String livesText = getResources().getString(R.string.lives) + ": " +  currentLives;
             tvLives.setText(livesText);
         }
