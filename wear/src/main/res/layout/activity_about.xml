@@ -30,6 +30,18 @@
             android:layout_gravity="center"
             android:text="@string/build_date"
             />
+        <TextView
+            android:id="@+id/highscore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:id="@+id/highcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
 
     </LinearLayout>
 </android.support.wearable.view.BoxInsetLayout>

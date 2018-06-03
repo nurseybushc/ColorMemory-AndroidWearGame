@@ -3,6 +3,9 @@
     package="com.unocode.colormemory">
 
     <uses-feature android:name="android.hardware.type.watch" />
+    <meta-data
+        android:name="com.google.android.wearable.standalone"
+        android:value="true" />
 
     <application
         android:allowBackup="true"

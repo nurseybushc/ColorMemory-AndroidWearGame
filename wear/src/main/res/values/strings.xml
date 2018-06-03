@@ -4,6 +4,8 @@
     <string name="hello_square">Hello Square World!</string>
     <string name="start">Start</string>
     <string name="highscore">Highscore</string>
+    <string name="multiplier">Multiplier</string>
+    <string name="defaultSettings">Defaults</string>
     <string name="highscores">Highscores</string>
     <string name="resetHighscore">Reset Highscore</string>
     <string name="failedMessage">Failed</string>

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +34,7 @@ public class GameActivity extends Activity {
 
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String highscore = "highscore";
+    public static final String highcount = "highcount";
     public static final String DifficultySetting = "difficulty";
     public static final String TimeLimit = "time_limit";
     public static final String Lives = "lives";
@@ -41,6 +43,7 @@ public class GameActivity extends Activity {
     public static final String Reverse = "reverse";
     public static final String DoubleSpeed = "double_speed";
     public static final String Inverse = "inverse";
+    public static final String TotalTimePlayedSetting = "total_time_played";
 
 
     public int difficultySetAt;
@@ -57,6 +60,7 @@ public class GameActivity extends Activity {
     public int livesCount, currentLives;
     public CountDownTimer cdt;
     public int gameSpeed;
+    public long startTime, endTime, totalTimePlayed;
 
     //score related
     public int scoreMultipler;
@@ -65,6 +69,9 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        startTime = SystemClock.elapsedRealtime();
+
         sequence = new ArrayList<>();
         currentCount = START_GAME_COUNT;
         currentScore = currentCount;
@@ -171,6 +178,54 @@ public class GameActivity extends Activity {
 
         GameLoop(currentCount);
     }
+
+    @Override
+    public void onResume(){
+        Log.d("gameloop", "onResume");
+        startTime = SystemClock.elapsedRealtime();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause(){
+        Log.d("gameloop", "onPause");
+        if(startTime > 0) {
+            endTime = SystemClock.elapsedRealtime();
+            totalTimePlayed = sharedpreferences.getLong(TotalTimePlayedSetting, 0);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putLong(TotalTimePlayedSetting, totalTimePlayed + (endTime - startTime));
+            editor.apply();
+            Log.d("gameloop", "timePlayed:" + totalTimePlayed + (endTime - startTime));
+        }
+        super.onPause();
+    }
+
+    /*@Override
+    public void onStop(){
+        Log.d("gameloop", "onStop");
+        if(startTime > 0) {
+            endTime = SystemClock.elapsedRealtime();
+            totalTimePlayed = sharedpreferences.getLong(TotalTimePlayedSetting, 0);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putLong(TotalTimePlayedSetting, totalTimePlayed + (endTime - startTime));
+            editor.apply();
+            Log.d("gameloop", "timePlayed:" + totalTimePlayed + (endTime - startTime));
+        }
+        super.onStop();
+    }*/
+
+    /*@Override
+    public void onDestroy(){
+        Log.d("gameloop", "onDestroy");
+        if(startTime > 0) {
+            endTime = SystemClock.elapsedRealtime();
+            totalTimePlayed = sharedpreferences.getLong(TotalTimePlayedSetting, 0);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putLong(TotalTimePlayedSetting, totalTimePlayed + (endTime - startTime));
+            editor.apply();
+        }
+        super.onDestroy();
+    }*/
 
     public void toggleAllButtons(boolean enable) { //button class
         if (enable) {
@@ -461,6 +516,13 @@ public class GameActivity extends Activity {
                     currentCount++;
                 }
 
+                //save highcount
+                if (sharedpreferences.getInt("highcount", 0) < currentCount) {
+                    Log.d("increaseCount", "new highcount is " + currentCount);
+
+                    editor.putInt(highcount, currentCount);
+                    editor.apply();
+                }
 
                 playerIndex = 0;//reset player index
 

@@ -23,13 +23,22 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center"
                 android:text="@string/settings" />
+            <Button
+                android:id="@+id/btnSetDefault"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="SetDefaults"
+                android:text="@string/defaultSettings"
+                style="@style/MyButtonStyleSmall"
+                />
 
             <Switch
                 android:id="@+id/switchLives"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/lives" />
 
             <Switch
@@ -37,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/randomize" />
 
             <Switch
@@ -45,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/time_limit" />
 
 
@@ -54,14 +63,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/randomize_colors" />
             <Switch
                 android:id="@+id/switchReverse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/reverse" />
 
             <Switch
@@ -69,14 +78,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/double_speed" />
             <Switch
                 android:id="@+id/switchInverse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/inverse" />
 
             <Spinner

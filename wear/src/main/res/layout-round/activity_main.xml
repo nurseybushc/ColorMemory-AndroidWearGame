@@ -30,7 +30,7 @@
             android:background="@mipmap/ic_play_circle_filled_white_48dp"
             android:contentDescription="@string/start"
             android:onClick="startGame"
-            android:paddingTop="15dp" />
+            android:paddingTop="5dp" />
 
         <TextView
             android:id="@+id/highscore"
@@ -38,13 +38,20 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/btnStart"
             android:layout_centerHorizontal="true"
-            android:paddingTop="15dp"
-            android:text="@string/highscore" />
+            android:paddingTop="5dp"
+            android:textSize="@dimen/font_size_small"/>
+        <TextView
+            android:id="@+id/multiplier"
+            android:layout_below="@id/highscore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/font_size_small" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/highscore"
+            android:layout_below="@id/multiplier"
             android:gravity="center"
             android:orientation="horizontal">
 

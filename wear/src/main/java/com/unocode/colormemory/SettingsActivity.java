@@ -84,7 +84,10 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(Randomize, switchRandomize.isChecked());
+                boolean switchRandomizeChecked = switchRandomize.isChecked();
+                String incDecMult = switchRandomizeChecked ? "+3" : "-3";
+                Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
+                editor.putBoolean(Randomize, switchRandomizeChecked);
                 editor.apply();
             }
         });
@@ -93,7 +96,10 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(TimeLimit, switchTimeLimit.isChecked());
+                boolean switchTimeLimitChecked = switchTimeLimit.isChecked();
+                String incDecMult = switchTimeLimitChecked ? "+3" : "-3";
+                Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
+                editor.putBoolean(TimeLimit, switchTimeLimitChecked);
                 editor.apply();
             }
         });
@@ -102,7 +108,10 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(Lives, switchLives.isChecked());
+                boolean switchLivesChecked = switchLives.isChecked();
+                String incDecMult = switchLivesChecked ? "-3" : "+3";
+                Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
+                editor.putBoolean(Lives, switchLivesChecked);
                 editor.apply();
             }
         });
@@ -111,7 +120,10 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(RandomColors, switchRandomColors.isChecked());
+                boolean switchRandomColorsChecked = switchRandomColors.isChecked();
+                String incDecMult = switchRandomColorsChecked ? "+5" : "-5";
+                Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
+                editor.putBoolean(RandomColors, switchRandomColorsChecked);
                 editor.apply();
             }
         });
@@ -120,7 +132,10 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(Reverse, switchReverse.isChecked());
+                boolean switchReverseChecked = switchReverse.isChecked();
+                String incDecMult = switchReverseChecked ? "+8" : "-8";
+                Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
+                editor.putBoolean(Reverse, switchReverseChecked);
                 editor.apply();
             }
         });
@@ -129,7 +144,10 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(DoubleSpeed, switchDoubleSpeed.isChecked());
+                boolean switchDoubleSpeedChecked = switchDoubleSpeed.isChecked();
+                String incDecMult = switchDoubleSpeedChecked ? "+5" : "-5";
+                Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
+                editor.putBoolean(DoubleSpeed, switchDoubleSpeedChecked);
                 editor.apply();
             }
         });
@@ -137,7 +155,10 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(Inverse, switchInverse.isChecked());
+                boolean switchInverseChecked = switchInverse.isChecked();
+                String incDecMult = switchInverseChecked ? "+5" : "-5";
+                Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
+                editor.putBoolean(Inverse, switchInverseChecked);
                 editor.apply();
             }
         });
@@ -165,6 +186,29 @@ public class SettingsActivity extends Activity {
     public void ResetScore(View v){
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putInt(highscoreSetting, 1);
+        editor.apply();
+    }
+
+    public void SetDefaults(View v){
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        switchTimeLimit.setChecked(false);
+        switchReverse.setChecked(false);
+        switchRandomize.setChecked(false);
+        switchLives.setChecked(false);
+        switchRandomColors.setChecked(false);
+        switchDoubleSpeed.setChecked(false);
+        switchInverse.setChecked(false);
+        dropdown.setSelection(0);
+
+        editor.putBoolean(TimeLimit, false);
+        editor.putBoolean(Reverse, false);
+        editor.putBoolean(Randomize, false);
+        editor.putBoolean(Lives, false);
+        editor.putBoolean(RandomColors, false);
+        editor.putBoolean(DoubleSpeed, false);
+        editor.putBoolean(Inverse, false);
+        editor.putInt(DifficultySetting, 0);
+
         editor.apply();
     }
 }

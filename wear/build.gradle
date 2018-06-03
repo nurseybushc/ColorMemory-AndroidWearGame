@@ -16,7 +16,7 @@ android {
         }
     }
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "com.unocode.colormemory"
         minSdkVersion 23
@@ -25,10 +25,14 @@ android {
         versionName "0.0.5"
     }
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            //signingConfig signingConfigs.release
         }
     }
     if (project.hasProperty("AndroidProject.signing")
@@ -52,10 +56,11 @@ android {
             android.buildTypes.release.signingConfig = null
         }
     }
+
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     provided 'com.google.android.wearable:wearable:2.0.0'
     compile 'com.google.android.support:wearable:2.0.0'
     compile 'com.google.android.gms:play-services-wearable:10.2.0'
