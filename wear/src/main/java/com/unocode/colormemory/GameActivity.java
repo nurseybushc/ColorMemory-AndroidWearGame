@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,19 +15,21 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class GameActivity extends Activity {
 
-    public TextView mTextView, tvWhoseTurn, tvScore, tvLives, tvTimeLimit, tvReverse, tvInverse;
+    public TextView mTextView, tvWhoseTurn, tvScore, tvLives, tvTimeLimit, tvReverse, tvAnyOrder, tvInverse;
     private Integer currentCount;
     private Integer currentScore;
     private Integer playerIndex;
     public Button btnRed, btnYellow, btnBlue, btnGreen;
     public Activity context;
     public ArrayList<Integer> sequence;
+    public List subsequence;
     public final int START_GAME_COUNT = 1;
     SharedPreferences sharedpreferences;
 
@@ -41,9 +42,10 @@ public class GameActivity extends Activity {
     public static final String RandomColors = "random_colors";
     public static final String Randomize = "randomize_list";
     public static final String Reverse = "reverse";
+    public static final String AnyOrder = "any_order";
     public static final String DoubleSpeed = "double_speed";
     public static final String Inverse = "inverse";
-    public static final String TotalTimePlayedSetting = "total_time_played";
+    public static final String TotalGamesPlayed = "total_games_played";
 
 
     public int difficultySetAt;
@@ -55,12 +57,12 @@ public class GameActivity extends Activity {
     public boolean randomizeSet;
     public boolean doubleSpeedSet;
     public boolean inverseSet;
+    public boolean anyOrderSet;
 
     public int timeLimit;
     public int livesCount, currentLives;
     public CountDownTimer cdt;
     public int gameSpeed;
-    public long startTime, endTime, totalTimePlayed;
 
     //score related
     public int scoreMultipler;
@@ -69,8 +71,6 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
-        startTime = SystemClock.elapsedRealtime();
 
         sequence = new ArrayList<>();
         currentCount = START_GAME_COUNT;
@@ -90,6 +90,8 @@ public class GameActivity extends Activity {
         reverseSet = sharedpreferences.getBoolean(Reverse, false);
         doubleSpeedSet = sharedpreferences.getBoolean(DoubleSpeed, false);
         inverseSet = sharedpreferences.getBoolean(Inverse, false);
+        //hard code to test
+        anyOrderSet = sharedpreferences.getBoolean(AnyOrder, false);
 
             switch (difficultySetAt) {
                 case 0:
@@ -120,6 +122,11 @@ public class GameActivity extends Activity {
         if(randomizeSet) scoreMultipler += 3;
         if(randomColors) scoreMultipler += 5;
         if(doubleSpeedSet) scoreMultipler += 5;
+        if(inverseSet) scoreMultipler += 5;
+        if(reverseSet) scoreMultipler += 8;
+        if(anyOrderSet) scoreMultipler -= 8;
+        if(livesSet) scoreMultipler -= 5;
+        if(timeLimitSet) scoreMultipler += 3;
 
         setContentView(R.layout.activity_game);
         mTextView = (TextView) findViewById(R.id.tvCurrentScore);
@@ -133,29 +140,23 @@ public class GameActivity extends Activity {
         });
 
         tvTimeLimit = (TextView) findViewById(R.id.tvTimeLimit);
-        if(timeLimitSet) {
-            //display time left textview toward bottom
-            scoreMultipler += 3;
-        }
 
         tvLives = (TextView) findViewById(R.id.tvLives);
         if(livesSet){
-            scoreMultipler -= 5;//having lives makes game easier
             String livesText = getResources().getString(R.string.lives) + ": " +  currentLives;
             tvLives.setText(livesText);
         }
 
         tvReverse = (TextView) findViewById(R.id.tvReverse);
         if(reverseSet){
-            scoreMultipler += 8;
             tvReverse.setText(R.string.reverse);
+        }else if(anyOrderSet){
+            tvReverse.setText(R.string.any_order);
         }
 
         tvInverse = (TextView) findViewById(R.id.tvInverse);
-        if(inverseSet){
-            scoreMultipler += 5;
-            tvInverse.setText(R.string.inverse);
-        }
+        if(inverseSet) tvInverse.setText(R.string.inverse);
+
 
         tvScore = (TextView) findViewById(R.id.tvScore);
         tvScore.setText(String.format(Locale.US, "%d", currentScore));
@@ -178,54 +179,6 @@ public class GameActivity extends Activity {
 
         GameLoop(currentCount);
     }
-
-    @Override
-    public void onResume(){
-        Log.d("gameloop", "onResume");
-        startTime = SystemClock.elapsedRealtime();
-        super.onResume();
-    }
-
-    @Override
-    public void onPause(){
-        Log.d("gameloop", "onPause");
-        if(startTime > 0) {
-            endTime = SystemClock.elapsedRealtime();
-            totalTimePlayed = sharedpreferences.getLong(TotalTimePlayedSetting, 0);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putLong(TotalTimePlayedSetting, totalTimePlayed + (endTime - startTime));
-            editor.apply();
-            Log.d("gameloop", "timePlayed:" + totalTimePlayed + (endTime - startTime));
-        }
-        super.onPause();
-    }
-
-    /*@Override
-    public void onStop(){
-        Log.d("gameloop", "onStop");
-        if(startTime > 0) {
-            endTime = SystemClock.elapsedRealtime();
-            totalTimePlayed = sharedpreferences.getLong(TotalTimePlayedSetting, 0);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putLong(TotalTimePlayedSetting, totalTimePlayed + (endTime - startTime));
-            editor.apply();
-            Log.d("gameloop", "timePlayed:" + totalTimePlayed + (endTime - startTime));
-        }
-        super.onStop();
-    }*/
-
-    /*@Override
-    public void onDestroy(){
-        Log.d("gameloop", "onDestroy");
-        if(startTime > 0) {
-            endTime = SystemClock.elapsedRealtime();
-            totalTimePlayed = sharedpreferences.getLong(TotalTimePlayedSetting, 0);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putLong(TotalTimePlayedSetting, totalTimePlayed + (endTime - startTime));
-            editor.apply();
-        }
-        super.onDestroy();
-    }*/
 
     public void toggleAllButtons(boolean enable) { //button class
         if (enable) {
@@ -255,6 +208,15 @@ public class GameActivity extends Activity {
     }
 
     public void GameLoop(int gameCount) {//game class
+        //log games played
+        if(gameCount == 1){
+            int totalGamesPlayed = sharedpreferences.getInt(TotalGamesPlayed, 0);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            Log.d("gameloop", "prev total games played:" + totalGamesPlayed);
+            editor.putInt(TotalGamesPlayed, totalGamesPlayed + 1);
+            editor.apply();
+        }
+
 
         Log.d("gameloop", String.format(Locale.US, "Round: %d", gameCount));
 
@@ -282,7 +244,7 @@ public class GameActivity extends Activity {
                 value = rand.nextInt(4) + 1;//rand between 1-4
             }
         }
-
+        subsequence = (List)sequence.clone();
         String sequenceString = "Sequence: ";
         for (int i = 0; i < sequence.size(); ++i) {//print the whole sequence for this round
             sequenceString = sequenceString + sequence.get(i) + ",";
@@ -464,6 +426,9 @@ public class GameActivity extends Activity {
     }
 
     public int calculateScore() {
+        Log.d("calculateScore()", "currentScore " + currentCount);
+        Log.d("calculateScore()", "scoreMultipler " + scoreMultipler);
+
         return currentCount * scoreMultipler;
     }
 
@@ -493,7 +458,64 @@ public class GameActivity extends Activity {
             expected = sequence.get(playerIndex);
         }
         Log.d("increaseScore", String.format(Locale.US, "Entered: %d. Expected: %d", selectedColor, expected));
-        if (expected == selectedColor) {
+
+        //testing any order
+        //List subsequence = sequence.subList(playerIndex, sequence.size());
+        if(anyOrderSet){
+            if(subsequence.contains(selectedColor)){
+                //remove the
+                subsequence.remove(subsequence.indexOf(selectedColor));
+                if (playerIndex + 1 >= sequence.size()) {//to prevent index out of bounds
+                    if (cdt != null) cdt.cancel();
+                    Log.d("increaseScore", "Good job!");
+
+                    currentScore = calculateScore();
+                    tvScore.setText(String.format(Locale.US, "%d", currentScore));
+
+                    //save highscore
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    if (sharedpreferences.getInt("highscore", 0) < currentScore) {
+                        Log.d("increaseScore", "new highscore is " + currentScore);
+
+                        editor.putInt(highscore, currentScore);
+                        editor.apply();
+                    }
+
+                    if(doubleSpeedSet){
+                        currentCount += 2;//
+                    } else{
+                        currentCount++;
+                    }
+
+                    //save highcount
+                    if (sharedpreferences.getInt("highcount", 0) < currentCount) {
+                        Log.d("increaseCount", "new highcount is " + currentCount);
+
+                        editor.putInt(highcount, currentCount);
+                        editor.apply();
+                    }
+
+                    playerIndex = 0;//reset player index
+
+                    GameLoop(currentCount);
+                } else {
+                    playerIndex++;
+                }
+            } else if (livesSet && currentLives > 0) {//fail but with lives
+                Log.d("increaseScore", "Failed but with lives");
+                failed = true;
+                currentLives--;
+                String livesText = getResources().getString(R.string.lives) + ": " +  currentLives;
+                tvLives.setText(livesText);
+                if (cdt != null) cdt.cancel();
+                playerIndex = 0;//reset player index
+                showContinueMessage();
+            } else {
+                Log.d("increaseScore", "Failed");
+                if (cdt != null) cdt.cancel();
+                showFailedMessage();
+            }
+        } else if (expected == selectedColor) {
             if (playerIndex + 1 >= sequence.size()) {//to prevent index out of bounds
                 if (cdt != null) cdt.cancel();
                 Log.d("increaseScore", "Good job!");

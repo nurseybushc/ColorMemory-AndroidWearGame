@@ -66,12 +66,20 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/randomize_colors" />
             <Switch
-                android:id="@+id/switchReverse"
+            android:id="@+id/switchReverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="@string/reverse" />
+
+            <Switch
+                android:id="@+id/switchAnyOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:text="@string/reverse" />
+                android:text="@string/any_order" />
 
             <Switch
                 android:id="@+id/switchDoubleSpeed"

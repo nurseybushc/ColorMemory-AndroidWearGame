@@ -18,6 +18,7 @@
     <string name="lives">Lives</string>
     <string name="randomize">Randomize</string>
     <string name="reverse">Reverse</string>
+    <string name="any_order">Any Order</string>
     <string name="inverse">Inverse</string>
     <string name="double_speed">Double Speed</string>
     <string name="randomize_colors">Random Colors</string>

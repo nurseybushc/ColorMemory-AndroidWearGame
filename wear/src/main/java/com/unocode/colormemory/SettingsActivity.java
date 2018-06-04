@@ -14,7 +14,7 @@ import android.content.Context;
 
 
 public class SettingsActivity extends Activity {
-    Switch switchRandomize, switchTimeLimit, switchLives, switchRandomColors, switchReverse, switchDoubleSpeed, switchInverse;
+    Switch switchRandomize, switchTimeLimit, switchLives, switchRandomColors, switchReverse, switchAnyOrder, switchDoubleSpeed, switchInverse;
     private Activity activity;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
@@ -22,6 +22,7 @@ public class SettingsActivity extends Activity {
     public static final String Lives = "lives";
     public static final String RandomColors = "random_colors";
     public static final String Reverse = "reverse";
+    public static final String AnyOrder = "any_order";
     public static final String DoubleSpeed = "double_speed";
     public static final String Inverse = "inverse";
 
@@ -34,6 +35,7 @@ public class SettingsActivity extends Activity {
     public int difficultySetAt;
     public boolean timeLimitSet;
     public boolean reverseSet;
+    public boolean anyOrderSet;
     public boolean livesSet;
     public boolean randomizeList;
     public boolean randomColors;
@@ -50,6 +52,7 @@ public class SettingsActivity extends Activity {
         switchTimeLimit = (Switch) findViewById(R.id.switchTimeLimit);
         switchLives = (Switch) findViewById(R.id.switchLives);
         switchReverse = (Switch) findViewById(R.id.switchReverse);
+        switchAnyOrder = (Switch) findViewById(R.id.switchAnyOrder);
         switchRandomColors = (Switch)findViewById(R.id.switchRandomColors);
         switchDoubleSpeed = (Switch) findViewById(R.id.switchDoubleSpeed);
         switchInverse = (Switch) findViewById(R.id.switchInverse);
@@ -59,6 +62,7 @@ public class SettingsActivity extends Activity {
 
         difficultySetAt = sharedpreferences.getInt(DifficultySetting, 0);
         reverseSet = sharedpreferences.getBoolean(Reverse, false);
+        anyOrderSet = sharedpreferences.getBoolean(AnyOrder, false);
         doubleSpeedSet = sharedpreferences.getBoolean(DoubleSpeed, false);
         timeLimitSet = sharedpreferences.getBoolean(TimeLimit, false);
         livesSet = sharedpreferences.getBoolean(Lives, false);
@@ -69,6 +73,7 @@ public class SettingsActivity extends Activity {
 
         switchTimeLimit.setChecked(timeLimitSet);
         switchReverse.setChecked(reverseSet);
+        switchAnyOrder.setChecked(anyOrderSet);
         switchRandomize.setChecked(randomizeList);
         switchLives.setChecked(livesSet);
         switchRandomColors.setChecked(randomColors);
@@ -133,9 +138,36 @@ public class SettingsActivity extends Activity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 boolean switchReverseChecked = switchReverse.isChecked();
+
+
+                //disable anyorder if reverse order checked
+                if(switchReverseChecked) {
+                    switchAnyOrder.setChecked(false);
+                    editor.putBoolean(AnyOrder, false);
+                }
+
                 String incDecMult = switchReverseChecked ? "+8" : "-8";
                 Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
                 editor.putBoolean(Reverse, switchReverseChecked);
+                editor.apply();
+            }
+        });
+
+        switchAnyOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                boolean switchAnyOrderChecked = switchAnyOrder.isChecked();
+
+                //disable reverse order if anyorder checked
+                if(switchAnyOrderChecked){
+                    switchReverse.setChecked(false);
+                    editor.putBoolean(Reverse, false);
+                }
+
+                String incDecMult = switchAnyOrderChecked ? "-8" : "+8";
+                Toast.makeText(activity, "Multiplier " + incDecMult,Toast.LENGTH_SHORT).show();
+                editor.putBoolean(AnyOrder, switchAnyOrderChecked);
                 editor.apply();
             }
         });
@@ -151,6 +183,7 @@ public class SettingsActivity extends Activity {
                 editor.apply();
             }
         });
+
         switchInverse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,6 +226,7 @@ public class SettingsActivity extends Activity {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         switchTimeLimit.setChecked(false);
         switchReverse.setChecked(false);
+        switchAnyOrder.setChecked(false);
         switchRandomize.setChecked(false);
         switchLives.setChecked(false);
         switchRandomColors.setChecked(false);
@@ -202,6 +236,7 @@ public class SettingsActivity extends Activity {
 
         editor.putBoolean(TimeLimit, false);
         editor.putBoolean(Reverse, false);
+        editor.putBoolean(AnyOrder, false);
         editor.putBoolean(Randomize, false);
         editor.putBoolean(Lives, false);
         editor.putBoolean(RandomColors, false);

@@ -12,12 +12,13 @@ import android.widget.TextView;
  */
 
 public class AboutActivity extends Activity {
-    private TextView tvAppVersion, tvHighscore, tcHighcount;
+    private TextView tvAppVersion, tvHighscore, tvHighcount, tvTotalGamesPlayed;
 
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String highscoreSetting = "highscore";
     public static final String highcountSetting = "highcount";
+    public static final String totalGamesPlayed = "total_games_played";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,13 @@ public class AboutActivity extends Activity {
         String highscoreText = "Highscore: " + sharedpreferences.getInt(highscoreSetting, 1);
         tvHighscore.setText(highscoreText);
 
-        tcHighcount = (TextView) findViewById(R.id.highcount);
+        tvHighcount = (TextView) findViewById(R.id.highcount);
         String highcountText = "Highcount: " + sharedpreferences.getInt(highcountSetting, 1);
-        tcHighcount.setText(highcountText);
+        tvHighcount.setText(highcountText);
+
+        tvTotalGamesPlayed = (TextView) findViewById(R.id.totalGamesPlayed);
+        String totalGamesPlayedText = "Games Played: " + sharedpreferences.getInt(totalGamesPlayed, 0);
+        tvTotalGamesPlayed.setText(totalGamesPlayedText);
+
     }
 }

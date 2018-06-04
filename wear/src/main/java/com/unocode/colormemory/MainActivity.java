@@ -25,6 +25,7 @@ public class MainActivity extends Activity {
     public static final String RandomColors = "random_colors";
     public static final String Randomize = "randomize_list";
     public static final String Reverse = "reverse";
+    public static final String AnyOrder = "any_order";
     public static final String DoubleSpeed = "double_speed";
     public static final String Inverse = "inverse";
 
@@ -33,6 +34,7 @@ public class MainActivity extends Activity {
     public boolean livesSet;
     public boolean randomColors;
     public boolean reverseSet;
+    public boolean anyOrderSet;
     public boolean randomizeSet;
     public boolean doubleSpeedSet;
     public boolean inverseSet;
@@ -80,6 +82,7 @@ public class MainActivity extends Activity {
         randomizeSet = sharedpreferences.getBoolean(Randomize, false);
         randomColors = sharedpreferences.getBoolean(RandomColors, false);
         reverseSet = sharedpreferences.getBoolean(Reverse, false);
+        anyOrderSet = sharedpreferences.getBoolean(AnyOrder, false);
         doubleSpeedSet = sharedpreferences.getBoolean(DoubleSpeed, false);
         inverseSet = sharedpreferences.getBoolean(Inverse, false);
 
@@ -100,6 +103,7 @@ public class MainActivity extends Activity {
         if(timeLimitSet) scoreMultiplier += 3;
         if(livesSet) scoreMultiplier -= 5;
         if(reverseSet) scoreMultiplier += 8;
+        if(anyOrderSet) scoreMultiplier -= 8;
         if(inverseSet) scoreMultiplier += 5;
 
         return scoreMultiplier;
