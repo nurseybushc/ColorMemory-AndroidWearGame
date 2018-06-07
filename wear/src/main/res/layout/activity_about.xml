@@ -15,13 +15,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/about" />
-
+        <TextView
+            android:id="@+id/app_credit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="@string/credit"
+            />
         <TextView
             android:id="@+id/app_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
             />
         <TextView
             android:id="@+id/build_date"

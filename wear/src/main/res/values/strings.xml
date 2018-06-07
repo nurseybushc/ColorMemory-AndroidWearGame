@@ -27,5 +27,6 @@
     <string-array name="difficulty"><item>Easy</item><item>Medium</item><item>Hard</item></string-array>
     <string name="cpu_turn">CPU</string>
     <string name="player_turn">PLAYER</string>
-    <string name="build_date">Change Date: 4/28/17</string>
+    <string name="build_date">Build Date: 6/6/18</string>
+    <string name="credit">Icon: Matt Calcote</string>
 </resources>
