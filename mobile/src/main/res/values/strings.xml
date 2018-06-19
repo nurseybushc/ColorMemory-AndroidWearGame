@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">ColorMemory</string>
-    <string name="title_activity_my">Flopsy Droid</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="welcome">ColorMemory Wear</string>
-    <string name="description">https://github.com/nurseymybush/ColorMemory-AndroidWearGame</string>
-    <string name="third">Click button above to start game on watch</string>
-</resources>

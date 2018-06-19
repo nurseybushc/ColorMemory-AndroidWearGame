@@ -1,69 +1,26 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        release
-    }
 
     publishNonDefault true
 
-    productFlavors {
-        wear1 {
-            // Use the defaultConfig value
-        }
-        wear2 {
-            minSdkVersion 25
-        }
-    }
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    flavorDimensions "default"
+
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.unocode.colormemory"
         minSdkVersion 25
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
-        versionName "0.0.6"
-    }
-    buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-            debuggable true
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //signingConfig signingConfigs.release
-        }
-    }
-    if (project.hasProperty("AndroidProject.signing")
-            && new File(project.property("AndroidProject.signing").toString()).exists()) {
-        def Properties props = new Properties()
-        def propFile = new File(project.property("AndroidProject.signing").toString())
-        if(propFile.canRead()) {
-            props.load(new FileInputStream(propFile))
-            if (props!=null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
-                    props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
-                android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
-                android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
-                android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
-                android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
-            } else {
-                println 'androidproject.properties found but some entries are missing'
-                android.buildTypes.release.signingConfig = null
-            }
-        } else {
-            println 'androidproject.properties file not found'
-            android.buildTypes.release.signingConfig = null
-        }
+        versionName "0.0.1"
     }
 
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    provided 'com.google.android.wearable:wearable:2.0.0'
-    compile 'com.google.android.support:wearable:2.0.0'
-    compile 'com.google.android.gms:play-services-wearable:10.2.0'
-    compile 'com.google.android.gms:play-services-auth:10.2.0'
-    compile 'com.google.android.gms:play-services-gcm:10.2.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly 'com.google.android.wearable:wearable:2.3.0'
+    implementation 'com.google.android.support:wearable:2.3.0'
+    implementation 'com.android.support:wear:26.0.2'
 }

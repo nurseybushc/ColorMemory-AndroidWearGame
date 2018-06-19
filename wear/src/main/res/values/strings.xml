@@ -29,4 +29,19 @@
     <string name="player_turn">PLAYER</string>
     <string name="build_date">Build Date: 6/6/18</string>
     <string name="credit">Icon: Matt Calcote</string>
+
+    <string-array name="navmenu_array_names">
+        <item>settings</item>
+        <item>about</item>
+    </string-array>
+
+    <string-array name="settings">
+        <item>Settings</item>
+        <item>ic_settings_white_24dp</item>
+    </string-array>
+
+    <string-array name="about">
+        <item>About</item>
+        <item>ic_info_white_24dp</item>
+    </string-array>
 </resources>

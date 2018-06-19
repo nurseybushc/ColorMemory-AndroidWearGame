@@ -7,3 +7,5 @@
 /build
 /captures
 .externalNativeBuild
+/wear/release
+/wear/build

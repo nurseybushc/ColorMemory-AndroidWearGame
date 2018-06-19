@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
@@ -55,4 +55,4 @@
             android:layout_gravity="center"
             />
     </LinearLayout>
-</android.support.wearable.view.BoxInsetLayout>
+</android.support.wear.widget.BoxInsetLayout>
